@@ -11,7 +11,7 @@ import pygame
 # Size definitions #
 ####################
 DIAMETER = 50
-LENGTH = 200
+LENGTH = 250
 WIDTH = 10
 
 #####################
@@ -27,7 +27,7 @@ class Leg():
     ALL ANGLES ARE TO BE DEFINED AS BEARINGS POINTING NORTH
     """
 
-    def __init__(self, offset=0, theta_one=180, theta_two=180):
+    def __init__(self, offset=50, theta_one=150, theta_two=210):
         self.hip_pos = (offset, offset)
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
         self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
@@ -96,15 +96,14 @@ class LegImage(Leg):
         """
         height = window.get_height()
 
-        # TODO
         window.blit(self.hip_joint, (
-            DIAMETER + self.hip_pos[0],
-            height - DIAMETER - self.hip_pos[1]))
+            self.hip_pos[0] - DIAMETER/2,
+            self.hip_pos[1] - DIAMETER/2))
 
         window.blit(self.thigh_joint, (
-            DIAMETER + self.knee_pos[0],
-            height - DIAMETER - self.knee_pos[1]))
+            self.knee_pos[0] - DIAMETER/2,
+            np.abs(self.knee_pos[1]) - DIAMETER/2))
 
-        window.blit(self.foot, (
-            DIAMETER + self.foot_pos[0],
-            height - DIAMETER - self.foot_pos[1]))
+        window.blit(self.thigh_joint, (
+            self.foot_pos[0] - DIAMETER/2,
+            np.abs(self.foot_pos[1]) - DIAMETER/2))
