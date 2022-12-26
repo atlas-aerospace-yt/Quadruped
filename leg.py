@@ -27,8 +27,20 @@ class Leg():
     ALL ANGLES ARE TO BE DEFINED AS BEARINGS POINTING NORTH
     """
 
-    def __init__(self, offset=50, theta_one=150, theta_two=210):
+    def __init__(self, offset=0, theta_one=135, theta_two=180):
         self.hip_pos = (offset, offset)
+
+        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
+        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
+
+    def set_leg_angles(self, theta_one, theta_two):
+        """
+        Sets the angle leg and re calculates the coordinates
+
+        Args:
+            theta_one (int): the bearing of the knee from the hip
+            theta_two (int): the bearing of the foot from the knee
+        """
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
         self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
 
@@ -46,7 +58,7 @@ class Leg():
         """
         x_co_ord = origin[0] + np.sin(bearing * np.pi/180) * distance
         y_co_ord = origin[1] + np.cos(bearing * np.pi/180) * distance
-        return (x_co_ord, y_co_ord)
+        return (int(x_co_ord), int(y_co_ord))
 
 
 class LegImage(Leg):
@@ -58,18 +70,15 @@ class LegImage(Leg):
     """
 
     def __init__(self):
-        super().__init__()
+        self.theta_one = 180
+        self.theta_two = 180
+
+        super().__init__(0, self.theta_one, self.theta_two)
 
         # Pivot definitions
         self.hip_joint = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
         self.thigh_joint = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
         self.foot = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
-
-        # Connection definitions
-        self.thigh = pygame.transform.scale(LINE, (
-            WIDTH, self.get_length(self.hip_pos, self.knee_pos)))
-        self.shin = pygame.transform.scale(LINE, (
-            WIDTH, self.get_length(self.knee_pos, self.foot_pos)))
 
     def get_length(self, co_ord_one, cor_ord_two):
         """
@@ -94,16 +103,13 @@ class LegImage(Leg):
         Args:
             window (pygame.display): the gui
         """
-        height = window.get_height()
+        window.blit(self.hip_joint, (self.hip_pos[0] + 50, np.abs(self.hip_pos[1]) + 50))
+        window.blit(self.thigh_joint, (self.knee_pos[0] + 50, np.abs(self.knee_pos[1]) + 50))
+        window.blit(self.foot, (self.foot_pos[0] + 50, np.abs(self.foot_pos[1]) + 50))
 
-        window.blit(self.hip_joint, (
-            self.hip_pos[0] - DIAMETER/2,
-            self.hip_pos[1] - DIAMETER/2))
+        pygame.draw.line(window, "black", (self.hip_pos[0] + 75, np.abs(self.hip_pos[1]) + 75),
+                         (self.knee_pos[0] + 75, np.abs(self.knee_pos[1]) + 75))
+        pygame.draw.line(window, "black", (self.knee_pos[0] + 75, np.abs(self.knee_pos[1]) + 75),
+                         (self.foot_pos[0] + 75, np.abs(self.foot_pos[1]) + 75))
 
-        window.blit(self.thigh_joint, (
-            self.knee_pos[0] - DIAMETER/2,
-            np.abs(self.knee_pos[1]) - DIAMETER/2))
-
-        window.blit(self.thigh_joint, (
-            self.foot_pos[0] - DIAMETER/2,
-            np.abs(self.foot_pos[1]) - DIAMETER/2))
+        pygame.draw.line(window, "black", (0, 650), (500, 650))
