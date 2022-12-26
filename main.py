@@ -7,7 +7,7 @@ from leg import LegImage
 
 # GUI definitions
 FPS = 60
-WIDTH, HEIGHT = 900, 900
+WIDTH, HEIGHT = 500, 700
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Dog leg simulation")
 
@@ -23,18 +23,30 @@ def show_gui():
     run = True
 
     while run:
-        WIN.fill("white")
+        for i in reversed(range(135, 180)):
+            WIN.fill("white")
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
+            my_leg.set_leg_angles(i, 360-i)
+            my_leg.display_leg(WIN)
 
-        my_leg.display_leg(WIN)
+            pygame.display.update()
+            clock.tick(FPS)
+        for i in range(135, 180):
+            WIN.fill("white")
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
 
-        pygame.display.update()
-        clock.tick(FPS)
+            my_leg.set_leg_angles(i, 360-i)
+            my_leg.display_leg(WIN)
 
+            pygame.display.update()
+            clock.tick(FPS)
     pygame.quit()
 
 if __name__ == "__main__":
+
     show_gui()
