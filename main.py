@@ -3,30 +3,16 @@ A 2D simulation involving forces of a Quadruped's leg
 """
 
 import pygame
-from leg import Leg
+from leg import LegImage
 
-####################
-# Size definitions #
-####################
-DIAMETER = 50
-LENGTH = 200
-
-###################
-# GUI definitions #
-###################
+# GUI definitions
 FPS = 60
 WIDTH, HEIGHT = 900, 900
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Dog leg simulation")
 
-#####################
-# Shape definitions #
-#####################
-ARROW = pygame.image.load("./Assets/arrow.png")
-LINE = pygame.image.load("./Assets/line.png")
-CIRCLE = pygame.image.load("./Assets/circle.png")
-
-my_leg = Leg()
+# Leg definitions
+my_leg = LegImage()
 
 def show_gui():
     """
@@ -42,6 +28,8 @@ def show_gui():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+
+        my_leg.display_leg(WIN)
 
         pygame.display.update()
         clock.tick(FPS)
