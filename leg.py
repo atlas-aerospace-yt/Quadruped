@@ -7,12 +7,18 @@ Classes:
 import numpy as np
 import pygame
 
+##############
+# Conversion #
+##############
+METERS_TO_PIXELS = 3_333
+
 ####################
 # Size definitions #
 ####################
-DIAMETER = 50
-LENGTH = 250
-WIDTH = 10
+DIAMETER = 0.015 * METERS_TO_PIXELS
+LENGTH = 0.075 * METERS_TO_PIXELS
+WIDTH = 0.005 * METERS_TO_PIXELS
+MASS = 1
 
 #####################
 # Shape definitions #
@@ -21,28 +27,65 @@ ARROW = pygame.image.load("./Assets/arrow.png")
 LINE = pygame.image.load("./Assets/line.png")
 CIRCLE = pygame.image.load("./Assets/circle.png")
 
+
 class Leg():
     """
     Legs objects
     ALL ANGLES ARE TO BE DEFINED AS BEARINGS POINTING NORTH
     """
 
-    def __init__(self, offset=0, theta_one=135, theta_two=180):
-        self.hip_pos = (offset, offset)
+    def __init__(self, theta_one=135, theta_two=180):
 
-        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
-        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
+        # joint definitions
+        self.foot_pos = (0, 549)
+        self.knee_pos = self.get_co_ordinate(self.foot_pos, LENGTH, theta_one)
+        self.hip_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
+
+        # physics definitions
+        self.position = [0, 0]
+        self.velocity = [0, 0]
+        self.acceleration = [0, 9.81]
+
+    def get_position(self, delta_time):
+        """
+        Calculates the position of the foot
+
+        Args:
+            delta_time (float): change in time
+
+        Returns:
+            list: the position of the foot
+        """
+        self.velocity[1] += self.acceleration[1] * delta_time
+        self.position[1] += self.velocity[1] * delta_time
+
+        # checks if the floor has been hit
+        if self.position[1] * METERS_TO_PIXELS > 549:
+            self.position[1] = 549 /  METERS_TO_PIXELS
+        if self.position[1] * METERS_TO_PIXELS == 549:
+            self.velocity[1] = 0
+
+        return self.position
 
     def set_leg_angles(self, theta_one, theta_two):
         """
         Sets the angle leg and re calculates the coordinates
 
         Args:
-            theta_one (int): the bearing of the knee from the hip
-            theta_two (int): the bearing of the foot from the knee
+            theta_one (int): the bearing of the knee from the foot
+            theta_two (int): the bearing of the hip from the knee
         """
-        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
-        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
+        self.knee_pos = self.get_co_ordinate(self.foot_pos, LENGTH, theta_one)
+        self.hip_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
+
+    def set_foot_pos(self, foot_pos):
+        """
+        Sets the foot position using x and y coordinates
+
+        Args:
+            foot_pos (list): the coordinates of the foot
+        """
+        self.foot_pos = (foot_pos[0]  * METERS_TO_PIXELS, foot_pos[1] * METERS_TO_PIXELS)
 
     def get_co_ordinate(self, origin, distance, bearing):
         """
@@ -70,15 +113,16 @@ class LegImage(Leg):
     """
 
     def __init__(self):
+        # Angle definitions
         self.theta_one = 180
         self.theta_two = 180
 
-        super().__init__(0, self.theta_one, self.theta_two)
+        super().__init__(self.theta_one, self.theta_two)
 
         # Pivot definitions
-        self.hip_joint = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
-        self.thigh_joint = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
         self.foot = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
+        self.thigh_joint = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
+        self.hip_joint = pygame.transform.scale(CIRCLE, (DIAMETER, DIAMETER))
 
     def get_length(self, co_ord_one, cor_ord_two):
         """
@@ -103,13 +147,16 @@ class LegImage(Leg):
         Args:
             window (pygame.display): the gui
         """
-        window.blit(self.hip_joint, (self.hip_pos[0] + 50, np.abs(self.hip_pos[1]) + 50))
-        window.blit(self.thigh_joint, (self.knee_pos[0] + 50, np.abs(self.knee_pos[1]) + 50))
-        window.blit(self.foot, (self.foot_pos[0] + 50, np.abs(self.foot_pos[1]) + 50))
+        self.set_foot_pos(self.get_position(0.02))
 
-        pygame.draw.line(window, "black", (self.hip_pos[0] + 75, np.abs(self.hip_pos[1]) + 75),
-                         (self.knee_pos[0] + 75, np.abs(self.knee_pos[1]) + 75))
-        pygame.draw.line(window, "black", (self.knee_pos[0] + 75, np.abs(self.knee_pos[1]) + 75),
-                         (self.foot_pos[0] + 75, np.abs(self.foot_pos[1]) + 75))
+        window.blit(self.foot, (self.foot_pos[0] + 50, self.foot_pos[1] + 50))
+        window.blit(self.thigh_joint, (self.knee_pos[0] + 50, self.knee_pos[1] + 50))
+        window.blit(self.hip_joint, (self.hip_pos[0] + 50, self.hip_pos[1] + 50))
 
+        pygame.draw.line(window, "black", (self.foot_pos[0] + 75, self.foot_pos[1] + 75),
+                         (self.knee_pos[0] + 75, self.knee_pos[1] + 75))
+        pygame.draw.line(window, "black", (self.knee_pos[0] + 75, self.knee_pos[1] + 75),
+                         (self.hip_pos[0] + 75, self.hip_pos[1] + 75))
+
+        # draw the floor
         pygame.draw.line(window, "black", (0, 650), (500, 650))
