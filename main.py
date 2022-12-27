@@ -1,52 +1,19 @@
 """
-A 2D simulation involving forces of a Quadruped's leg
+A 1D simulation of a quadrupeds leg
 """
 
-import pygame
-from leg import LegImage
+import matplotlib.pyplot as plt
 
-# GUI definitions
-FPS = 50
-WIDTH, HEIGHT = 500, 700
-WIN = pygame.display.set_mode((WIDTH,HEIGHT))
-pygame.display.set_caption("Dog leg simulation")
+from shapes import Circle
 
-# Leg definitions
-my_leg = LegImage()
+fig = plt.figure()
+ax = fig.add_subplot()
+ax.set_aspect('equal', adjustable='box')
 
-def show_gui():
-    """
-    Show the gui and perform each frame updates
-    """
-    clock = pygame.time.Clock()
+my_circle = Circle(1, (0,0), 0.00001)
 
-    run = True
+plt.xlim([-1, 1])
+plt.ylim([-1, 1])
 
-    while run:
-        for i in reversed(range(100, 180)):
-            WIN.fill("white")
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-
-            my_leg.set_leg_angles(i, 360-i)
-            my_leg.display_leg(WIN)
-
-            pygame.display.update()
-            clock.tick(FPS)
-        for i in range(100, 180):
-            WIN.fill("white")
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-
-            my_leg.set_leg_angles(i, 360-i)
-            my_leg.display_leg(WIN)
-
-            pygame.display.update()
-            clock.tick(FPS)
-    pygame.quit()
-
-if __name__ == "__main__":
-
-    show_gui()
+plt.plot(my_circle.x_list, my_circle.y_list)
+plt.show()
