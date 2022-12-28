@@ -47,11 +47,11 @@ class Leg():
             Newtons: The force vector output
         """
         weight = 9.81 * MASS
-        force_one_x = np.sin((self.theta_one-90)*np.pi/180) * TORQUE / LENGTH
-        force_one_y = np.cos((self.theta_one-90) * np.pi/180) * TORQUE / LENGTH
+        force_one_x = np.abs(np.sin((self.theta_one-90)*np.pi/180) * TORQUE / LENGTH)
+        force_one_y = np.abs(np.cos((self.theta_one-90) * np.pi/180) * TORQUE / LENGTH)
 
-        force_two_x = np.sin((self.theta_two-90)*np.pi/180) * TORQUE / LENGTH
-        force_two_y = np.cos((self.theta_two-90) * np.pi/180) * TORQUE / LENGTH
+        force_two_x = np.abs(np.sin((self.theta_two-90)*np.pi/180) * TORQUE / LENGTH)
+        force_two_y = np.abs(np.cos((self.theta_two-90) * np.pi/180) * TORQUE / LENGTH)
 
         force_x = force_one_x + force_two_x
         force_y = force_one_y + force_two_y - weight
@@ -71,7 +71,7 @@ class Leg():
         forces = self.get_resultant_forces()
 
         self.acceleration = [forces[0] / MASS, forces[1] / MASS]
-
+        print(self.acceleration)
         self.elapsed += delta_time
         self.velocity[1] += self.acceleration[1] * delta_time
         self.hip_pos[1] += self.velocity[1] * delta_time
@@ -92,6 +92,9 @@ class Leg():
             length = np.sqrt(LENGTH ** 2 - (delta_height/2) ** 2)
 
             self.knee_pos = [length, mean_height]
+
+        self.theta_one = self.get_bearing(self.hip_pos, self.knee_pos)
+        self.theta_two = self.get_bearing(self.knee_pos, self.foot_pos)
 
     def set_leg_angles(self, theta_one, theta_two):
         """
@@ -129,7 +132,24 @@ class Leg():
         y_co_ord = origin[1] + np.cos(bearing * np.pi/180) * distance
         return [x_co_ord, y_co_ord]
 
-    def get_length(self, co_ord_one, cor_ord_two):
+    def get_bearing(self, co_ord_one, co_ord_two):
+        """
+        Calculates the bearing from co_ord_one to co_ord_two
+
+        Args:
+            co_ord_one (list): starting point
+            cor_ord_two (list): end point
+
+        Returns:
+            int: the bearing
+        """
+        x = co_ord_two[0] - co_ord_one[0]
+        y = co_ord_two[1] - co_ord_one[1]
+
+        bearing = np.arctan2([x], [y]) * 180 / np.pi
+        return bearing[0]
+
+    def get_length(self, co_ord_one, co_ord_two):
         """
         calculates the distance between two points
 
@@ -140,7 +160,7 @@ class Leg():
         Returns:
             int: the distance between the two points
         """
-        x_distance = co_ord_one[0] - cor_ord_two[0]
-        y_distance = co_ord_one[1] - cor_ord_two[1]
+        x_distance = co_ord_one[0] - co_ord_two[0]
+        y_distance = co_ord_one[1] - co_ord_two[1]
 
         return np.sqrt(x_distance ** 2 + y_distance ** 2)
