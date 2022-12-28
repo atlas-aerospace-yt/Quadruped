@@ -69,15 +69,15 @@ class GraphLeg(Leg):
             self.__init__()
         ax.clear()
         ax.set_xlim([-0.05, 0.2])
-        ax.set_ylim([-0.2, 0.05])
+        ax.set_ylim([0, 0.3])
 
         self.plot_joints(ax)
         self.plot_leg(ax)
 
-        plt.text(-0.175, 0, f"time: {round(self.elapsed, 2)}s", fontsize=14)
+        plt.text(-0.2, 0.15, f"time: {round(self.elapsed, 2)}s", fontsize=14)
 
 my_leg = GraphLeg()
 anim = FuncAnimation(fig, my_leg.animate, frames=50, interval=0.01)
 
-anim.save('leg_under_free_fall.gif', writer='A. C. Armitage')
-#plt.show()
+#anim.save('leg_under_free_fall.gif', writer='A. C. Armitage')
+plt.show()
