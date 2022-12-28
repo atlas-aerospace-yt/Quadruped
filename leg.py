@@ -5,12 +5,6 @@ Classes:
 """
 
 import numpy as np
-import pygame
-
-##############
-# Conversion #
-##############
-METERS_TO_PIXELS = 3_000
 
 ####################
 # Size definitions #
@@ -20,15 +14,6 @@ WIDTH = 0.005
 MASS = 1
 TORQUE = 0.137
 
-
-#####################
-# Shape definitions #
-#####################
-ARROW = pygame.image.load("./Assets/arrow.png")
-LINE = pygame.image.load("./Assets/line.png")
-CIRCLE = pygame.image.load("./Assets/circle.png")
-
-
 class Leg():
     """
     Legs objects
@@ -37,17 +22,21 @@ class Leg():
 
     def __init__(self, theta_one=180, theta_two=180):
 
+        self.theta_one = 180
+        self.theta_two = 180
+
+        self.elapsed = 0
+
         # joint definitions
-        self.hip_pos = (0, 0)
+        self.hip_pos = [0, 0]
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
         self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
 
         # physics definitions
-        self.position = [0, 0]
         self.velocity = [0, 0]
-        self.acceleration = [0, 9.81]
+        self.acceleration = [0, -9.81]
 
-    def get_resultant_forces(self, theta_one:'Degrees', theta_two:'Degrees')->'Newtons':
+    def get_resultant_forces(self)->'Newtons':
         """
         Calculates the X and Y component of the resultant forces
 
@@ -59,14 +48,14 @@ class Leg():
             Newtons: The force vector output
         """
         weight = 9.81 * MASS
-        force_one_x = np.sin((theta_one-90)*np.pi/180) * TORQUE / LENGTH
-        force_one_y = np.cos((theta_one-90) * np.pi/180) * TORQUE / LENGTH
+        force_one_x = np.sin((self.theta_one-90)*np.pi/180) * TORQUE / LENGTH
+        force_one_y = np.cos((self.theta_one-90) * np.pi/180) * TORQUE / LENGTH
 
         force_y = force_one_y - weight
 
-        return (force_one_x, force_y)
+        return [force_one_x, force_y]
 
-    def get_position(self, delta_time):
+    def update_position(self, delta_time:'seconds')->'meters':
         """
         Calculates the position of the hip
 
@@ -76,16 +65,26 @@ class Leg():
         Returns:
             list: the position of the hip
         """
+        self.elapsed += delta_time
         self.velocity[1] += self.acceleration[1] * delta_time
-        self.position[1] += self.velocity[1] * delta_time
+        self.hip_pos[1] += self.velocity[1] * delta_time
 
         # checks if the floor has been hipt
-        if self.position[1] > 0.2:
-            self.position[1] = 0.2
-        if self.position[1] == 0.2:
+        if self.hip_pos[1] < -0.2:
+            self.hip_pos[1] = -0.2
+        if self.hip_pos[1] == -0.2:
             self.velocity[1] = 0
 
-        return self.position
+        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, self.theta_one)
+        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.theta_two)
+
+        if self.foot_pos[1] < -0.2:
+            self.foot_pos[1] = -0.2
+            mean_height = (self.hip_pos[1] + self.foot_pos[1]) / 2
+            delta_height = self.hip_pos[1] - self.foot_pos[1]
+            length = np.sqrt(LENGTH ** 2 - (delta_height/2) ** 2)
+
+            self.knee_pos = [length, mean_height]
 
     def set_leg_angles(self, theta_one, theta_two):
         """
@@ -105,7 +104,7 @@ class Leg():
         Args:
             hip_pos (list): the coordinates of the hip
         """
-        self.hip_pos = (hip_pos[0], hip_pos[1])
+        self.hip_pos = [hip_pos[0], hip_pos[1]]
 
     def get_co_ordinate(self, origin, distance, bearing):
         """
@@ -121,7 +120,7 @@ class Leg():
         """
         x_co_ord = origin[0] + np.sin(bearing * np.pi/180) * distance
         y_co_ord = origin[1] + np.cos(bearing * np.pi/180) * distance
-        return (int(x_co_ord), int(y_co_ord))
+        return [x_co_ord, y_co_ord]
 
     def get_length(self, co_ord_one, cor_ord_two):
         """
@@ -137,4 +136,4 @@ class Leg():
         x_distance = co_ord_one[0] - cor_ord_two[0]
         y_distance = co_ord_one[1] - cor_ord_two[1]
 
-        return int(np.sqrt(x_distance ** 2 + y_distance ** 2))
+        return np.sqrt(x_distance ** 2 + y_distance ** 2)
