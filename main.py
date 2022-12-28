@@ -3,17 +3,81 @@ A 1D simulation of a quadrupeds leg
 """
 
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
+from leg import Leg
 from shapes import Circle
 
-fig = plt.figure()
-ax = fig.add_subplot()
+# Constant joint radius
+RADIUS = 0.01
+
+plt.xlim([-10, 10])
+plt.ylim([-10, 10])
+
+fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 5))
+
 ax.set_aspect('equal', adjustable='box')
 
-my_circle = Circle(1, (0,0), 0.00001)
+class GraphLeg(Leg):
+    """
+    Graphs the leg
+    """
+    def __init__(self):
+        self.delta_time = 0.005
 
-plt.xlim([-1, 1])
-plt.ylim([-1, 1])
+        super().__init__()
 
-plt.plot(my_circle.x_list, my_circle.y_list)
-plt.show()
+    def plot_joints(self, axes):
+        """
+        Plots the circles for the joints
+
+        Args:
+            axes (plt.subplots): the axis
+        """
+        self.update_position(self.delta_time)
+
+        hip_joint = Circle(RADIUS, self.hip_pos, 0.0001)
+        knee_joint = Circle(RADIUS, self.knee_pos, 0.0001)
+        foot = Circle(RADIUS, self.foot_pos, 0.0001)
+
+        axes.plot(hip_joint.x_list, hip_joint.y_list, color="black")
+        axes.plot(knee_joint.x_list, knee_joint.y_list, color="black")
+        axes.plot(foot.x_list, foot.y_list, color="black")
+
+    def plot_leg(self, axes):
+        """
+        Plots the straight leg
+
+        Args:
+            axes (plt.subplots): the axis
+        """
+        x = [self.hip_pos[0], self.knee_pos[0], self.foot_pos[0]]
+        y = [self.hip_pos[1], self.knee_pos[1], self.foot_pos[1]]
+
+        axes.plot(x, y, color="black")
+
+    #def plot_forces
+
+    def animate(self, _):
+        """
+        Displays the legs
+
+        Args:
+            _ (int): unused variable passed in from FuncAnimation
+        """
+        if _ == 1:
+            self.__init__()
+        ax.clear()
+        ax.set_xlim([-0.05, 0.2])
+        ax.set_ylim([-0.2, 0.05])
+
+        self.plot_joints(ax)
+        self.plot_leg(ax)
+
+        plt.text(-0.175, 0, f"time: {round(self.elapsed, 2)}s", fontsize=14)
+
+my_leg = GraphLeg()
+anim = FuncAnimation(fig, my_leg.animate, frames=50, interval=0.01)
+
+anim.save('leg_under_free_fall.gif', writer='A. C. Armitage')
+#plt.show()
