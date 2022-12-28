@@ -6,13 +6,12 @@ Classes:
 
 import numpy as np
 
-####################
-# Size definitions #
-####################
-LENGTH = 0.075
-WIDTH = 0.005
-MASS = 1
-TORQUE = 0.137
+# Simulation parameters
+STARTING_HEIGHT = 0.25  # m
+LENGTH = 0.075          # m
+WIDTH = 0.005           # m
+MASS = 0.1              # kg
+TORQUE = 0.206          # Nm
 
 class Leg():
     """
@@ -28,7 +27,7 @@ class Leg():
         self.elapsed = 0
 
         # joint definitions
-        self.hip_pos = [0, 0]
+        self.hip_pos = [0, STARTING_HEIGHT]
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
         self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
 
@@ -51,9 +50,13 @@ class Leg():
         force_one_x = np.sin((self.theta_one-90)*np.pi/180) * TORQUE / LENGTH
         force_one_y = np.cos((self.theta_one-90) * np.pi/180) * TORQUE / LENGTH
 
-        force_y = force_one_y - weight
+        force_two_x = np.sin((self.theta_two-90)*np.pi/180) * TORQUE / LENGTH
+        force_two_y = np.cos((self.theta_two-90) * np.pi/180) * TORQUE / LENGTH
 
-        return [force_one_x, force_y]
+        force_x = force_one_x + force_two_x
+        force_y = force_one_y + force_two_y - weight
+
+        return [force_x, force_y]
 
     def update_position(self, delta_time:'seconds')->'meters':
         """
@@ -65,21 +68,25 @@ class Leg():
         Returns:
             list: the position of the hip
         """
+        forces = self.get_resultant_forces()
+
+        self.acceleration = [forces[0] / MASS, forces[1] / MASS]
+
         self.elapsed += delta_time
         self.velocity[1] += self.acceleration[1] * delta_time
         self.hip_pos[1] += self.velocity[1] * delta_time
 
         # checks if the floor has been hipt
-        if self.hip_pos[1] < -0.2:
-            self.hip_pos[1] = -0.2
-        if self.hip_pos[1] == -0.2:
+        if self.hip_pos[1] < 0:
+            self.hip_pos[1] = 0
+        if self.hip_pos[1] == 0:
             self.velocity[1] = 0
 
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, self.theta_one)
         self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.theta_two)
 
-        if self.foot_pos[1] < -0.2:
-            self.foot_pos[1] = -0.2
+        if self.foot_pos[1] < 0:
+            self.foot_pos[1] = 0
             mean_height = (self.hip_pos[1] + self.foot_pos[1]) / 2
             delta_height = self.hip_pos[1] - self.foot_pos[1]
             length = np.sqrt(LENGTH ** 2 - (delta_height/2) ** 2)
