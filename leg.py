@@ -7,22 +7,65 @@ Classes:
 import numpy as np
 
 # Simulation parameters
-STARTING_HEIGHT = 0.25  # m
+STARTING_HEIGHT = 0.3  # m
 LENGTH = 0.075          # m
 WIDTH = 0.005           # m
-MASS = 0.1              # kg
+MASS = 0.1             # kg
 TORQUE = 0.206          # Nm
 
-class Leg():
+class Servo:
+    """
+    Models the servo
+    """
+
+    def __init__(self, setpoint):
+        self.p = 0.9
+        self.i = 0.7
+        self.d = 0.4
+
+        self.integral = 0
+        self.setpoint = setpoint
+        self.prev_error = 0
+
+    def get_torque_output(self, bearing, delta_time:'seconds'):
+        """
+        Gets the torque output from the servo
+
+        Args:
+            bearing (_type_): _description_
+            dt (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        error = self.setpoint - bearing
+
+        rate_of_change = (error - self.prev_error) / delta_time
+
+        self.integral += error * delta_time
+
+        torque = error * self.i + self.integral + rate_of_change
+        self.prev_error = error
+
+        if torque > TORQUE:
+            torque = TORQUE
+        elif torque < -TORQUE:
+            torque = - TORQUE
+        return torque
+
+
+class Leg:
     """
     Legs objects
     ALL ANGLES ARE TO BE DEFINED AS BEARINGS POINTING NORTH
     """
 
     def __init__(self, theta_one=180, theta_two=180):
+        self.servo_one = Servo(theta_one)
+        self.servo_two = Servo(theta_two)
 
-        self.theta_one = 180
-        self.theta_two = 180
+        self.theta_one = 0
+        self.theta_two = 0
 
         self.elapsed = 0
 
@@ -33,9 +76,8 @@ class Leg():
 
         # physics definitions
         self.velocity = [0, 0]
-        self.acceleration = [0, -9.81]
 
-    def get_resultant_forces(self)->'Newtons':
+    def get_resultant_forces(self, delta_time:'seconds'=0.005, on_floor:'bool'=True)->'Newtons':
         """
         Calculates the X and Y component of the resultant forces
 
@@ -46,15 +88,23 @@ class Leg():
         Returns:
             Newtons: The force vector output
         """
-        weight = 9.81 * MASS
-        force_one_x = np.abs(np.sin((self.theta_one-90)*np.pi/180) * TORQUE / LENGTH)
-        force_one_y = np.abs(np.cos((self.theta_one-90) * np.pi/180) * TORQUE / LENGTH)
+        torque_one = self.servo_one.get_torque_output(self.theta_one, delta_time)
+        torque_two = self.servo_two.get_torque_output(self.theta_two, delta_time)
 
-        force_two_x = np.abs(np.sin((self.theta_two-90)*np.pi/180) * TORQUE / LENGTH)
-        force_two_y = np.abs(np.cos((self.theta_two-90) * np.pi/180) * TORQUE / LENGTH)
+        weight = -9.81 * MASS
 
-        force_x = force_one_x + force_two_x
-        force_y = force_one_y + force_two_y - weight
+        if on_floor:
+            force_one_x = np.sin((self.theta_one-90)*np.pi/180) * torque_one / LENGTH
+            force_one_y = np.cos((self.theta_one-90) * np.pi/180) * torque_one / LENGTH
+
+            force_two_x = -np.sin((self.theta_two-90)*np.pi/180) * torque_two / LENGTH
+            force_two_y = -np.cos((self.theta_two-90) * np.pi/180) * torque_two / LENGTH
+
+            force_x = force_one_x + force_two_x
+            force_y = force_one_y + force_two_y + weight
+        else:
+            force_x = 0
+            force_y = weight
 
         return [force_x, force_y]
 
@@ -68,22 +118,25 @@ class Leg():
         Returns:
             list: the position of the hip
         """
-        forces = self.get_resultant_forces()
+        forces = self.get_resultant_forces(on_floor=self.foot_pos[1]==0)
 
-        self.acceleration = [forces[0] / MASS, forces[1] / MASS]
-        print(self.acceleration)
+        self.theta_one = self.get_bearing(self.hip_pos, self.knee_pos)
+        self.theta_two = self.get_bearing(self.knee_pos, self.foot_pos)
+
+        acceleration = [forces[0] / MASS, forces[1] / MASS]
+
         self.elapsed += delta_time
-        self.velocity[1] += self.acceleration[1] * delta_time
+        self.velocity[1] += acceleration[1] * delta_time
         self.hip_pos[1] += self.velocity[1] * delta_time
 
-        # checks if the floor has been hipt
+        # checks if the floor has been hit
         if self.hip_pos[1] < 0:
             self.hip_pos[1] = 0
         if self.hip_pos[1] == 0:
             self.velocity[1] = 0
 
-        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, self.theta_one)
-        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.theta_two)
+        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, self.servo_one.setpoint)
+        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.servo_two.setpoint)
 
         if self.foot_pos[1] < 0:
             self.foot_pos[1] = 0
@@ -92,9 +145,6 @@ class Leg():
             length = np.sqrt(LENGTH ** 2 - (delta_height/2) ** 2)
 
             self.knee_pos = [length, mean_height]
-
-        self.theta_one = self.get_bearing(self.hip_pos, self.knee_pos)
-        self.theta_two = self.get_bearing(self.knee_pos, self.foot_pos)
 
     def set_leg_angles(self, theta_one, theta_two):
         """
