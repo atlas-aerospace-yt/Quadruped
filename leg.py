@@ -10,7 +10,7 @@ import numpy as np
 STARTING_HEIGHT = 0.3  # m
 LENGTH = 0.075          # m
 WIDTH = 0.005           # m
-MASS = 0.1             # kg
+MASS = 0.15             # kg
 TORQUE = 0.206          # Nm
 
 class Servo:
@@ -19,9 +19,9 @@ class Servo:
     """
 
     def __init__(self, setpoint):
-        self.p = 0.9
-        self.i = 0.7
-        self.d = 0.4
+        self.p = 0.00009
+        self.i = 0.00007
+        self.d = 0.00004
 
         self.integral = 0
         self.setpoint = setpoint
@@ -56,13 +56,18 @@ class Servo:
 
 class Leg:
     """
-    Legs objects
-    ALL ANGLES ARE TO BE DEFINED AS BEARINGS POINTING NORTH
+    Holds a leg which can be graphed
+    ALL ANGLES ARE TO BE DEFINED AS BEARINGS POINTING NORTH (TOP
+    OF THE SCREEN)
     """
 
-    def __init__(self, theta_one=180, theta_two=180):
-        self.servo_one = Servo(theta_one)
-        self.servo_two = Servo(theta_two)
+    def __init__(self, theta=(180, 180), limits=(120,240)):
+        # servo initialisation
+        self.servo_one = Servo(theta[0])
+        self.servo_two = Servo(theta[1])
+
+        # hard mechanical limits
+        self.limits = limits
 
         self.theta_one = 0
         self.theta_two = 0
@@ -71,8 +76,8 @@ class Leg:
 
         # joint definitions
         self.hip_pos = [0, STARTING_HEIGHT]
-        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta_one)
-        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta_two)
+        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta[0])
+        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta[1])
 
         # physics definitions
         self.velocity = [0, 0]
@@ -108,7 +113,7 @@ class Leg:
 
         return [force_x, force_y]
 
-    def update_position(self, delta_time:'seconds')->'meters':
+    def update_position(self, delta_time:'seconds')->'Newtons':
         """
         Calculates the position of the hip
 
@@ -145,6 +150,16 @@ class Leg:
             length = np.sqrt(LENGTH ** 2 - (delta_height/2) ** 2)
 
             self.knee_pos = [length, mean_height]
+
+        if self.get_bearing(self.hip_pos, self.knee_pos) < self.limits[0] or self.get_bearing(
+            self.knee_pos, self.foot_pos) > self.limits[1]:
+
+            self.knee_pos = self.get_co_ordinate(self.foot_pos, LENGTH, self.limits[1]-180)
+            self.hip_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.limits[0]+180)
+
+            print(self.foot_pos, self.knee_pos, self.hip_pos)
+
+        return forces
 
     def set_leg_angles(self, theta_one, theta_two):
         """
