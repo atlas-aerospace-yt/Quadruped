@@ -19,6 +19,7 @@ class Servo:
     """
 
     def __init__(self, setpoint):
+
         self.p = 0.00009
         self.i = 0.00007
         self.d = 0.00004
@@ -27,7 +28,7 @@ class Servo:
         self.setpoint = setpoint
         self.prev_error = 0
 
-    def get_torque_output(self, bearing, delta_time:'seconds'):
+    def get_torque_output(self, bearing:'degrees', delta_time:'seconds'):
         """
         Gets the torque output from the servo
 
@@ -44,7 +45,7 @@ class Servo:
 
         self.integral += error * delta_time
 
-        torque = error * self.i + self.integral + rate_of_change
+        torque = error * self.p + self.integral * self.i + rate_of_change * self.d
         self.prev_error = error
 
         if torque > TORQUE:
@@ -75,9 +76,9 @@ class Leg:
         self.elapsed = 0
 
         # joint definitions
-        self.foot_pos = [0, 0]
+        self.hip_pos = [0, 0]
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta[0])
-        self.hip_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta[1])
+        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta[1])
 
         # physics definitions
         self.velocity = [0, 0]
@@ -93,7 +94,8 @@ class Leg:
         Returns:
             Newtons: The force vector output
         """
-        TODO
+        return [0, 0]
+
 
     def update_position(self, delta_time:'seconds')->'Newtons':
         """
@@ -105,8 +107,7 @@ class Leg:
         Returns:
             list: the position of the hip
         """
-
-        TODO
+        pass
 
     def set_leg_angles(self, theta_one, theta_two):
         """
