@@ -20,7 +20,7 @@ class GraphLeg(Leg):
     Graphs the leg
     """
     def __init__(self):
-        self.delta_time = 0.005
+        self.delta_time = 0.001
 
         super().__init__((135, 225), (120, 240))
 
@@ -87,7 +87,7 @@ class GraphLeg(Leg):
         plt.text(-0.2, 0.15, f"time: {round(self.elapsed, 2)}s", fontsize=14)
 
 my_leg = GraphLeg()
-anim = FuncAnimation(fig, my_leg.animate, frames=1900, interval=0.01)
+anim = FuncAnimation(fig, my_leg.animate, frames=1750, interval=0.01)
 
 #anim.save('leg_under_free_fall.gif', writer='A. C. Armitage')
 plt.show()
