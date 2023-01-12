@@ -75,9 +75,9 @@ class Leg:
         self.elapsed = 0
 
         # joint definitions
-        self.hip_pos = [0, STARTING_HEIGHT]
+        self.foot_pos = [0, 0]
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta[0])
-        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta[1])
+        self.hip_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta[1])
 
         # physics definitions
         self.velocity = [0, 0]
@@ -93,25 +93,7 @@ class Leg:
         Returns:
             Newtons: The force vector output
         """
-        torque_one = self.servo_one.get_torque_output(self.theta_one, delta_time)
-        torque_two = self.servo_two.get_torque_output(self.theta_two, delta_time)
-
-        weight = -9.81 * MASS
-
-        if on_floor:
-            force_one_x = np.sin((self.theta_one-90)*np.pi/180) * torque_one / LENGTH
-            force_one_y = np.cos((self.theta_one-90) * np.pi/180) * torque_one / LENGTH
-
-            force_two_x = -np.sin((self.theta_two-90)*np.pi/180) * torque_two / LENGTH
-            force_two_y = -np.cos((self.theta_two-90) * np.pi/180) * torque_two / LENGTH
-
-            force_x = force_one_x + force_two_x
-            force_y = force_one_y + force_two_y + weight
-        else:
-            force_x = 0
-            force_y = weight
-
-        return [force_x, force_y]
+        TODO
 
     def update_position(self, delta_time:'seconds')->'Newtons':
         """
@@ -123,43 +105,8 @@ class Leg:
         Returns:
             list: the position of the hip
         """
-        forces = self.get_resultant_forces(on_floor=self.foot_pos[1]==0)
 
-        self.theta_one = self.get_bearing(self.hip_pos, self.knee_pos)
-        self.theta_two = self.get_bearing(self.knee_pos, self.foot_pos)
-
-        acceleration = [forces[0] / MASS, forces[1] / MASS]
-
-        self.elapsed += delta_time
-        self.velocity[1] += acceleration[1] * delta_time
-        self.hip_pos[1] += self.velocity[1] * delta_time
-
-        # checks if the floor has been hit
-        if self.hip_pos[1] < 0:
-            self.hip_pos[1] = 0
-        if self.hip_pos[1] == 0:
-            self.velocity[1] = 0
-
-        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, self.servo_one.setpoint)
-        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.servo_two.setpoint)
-
-        if self.foot_pos[1] < 0:
-            self.foot_pos[1] = 0
-            mean_height = (self.hip_pos[1] + self.foot_pos[1]) / 2
-            delta_height = self.hip_pos[1] - self.foot_pos[1]
-            length = np.sqrt(LENGTH ** 2 - (delta_height/2) ** 2)
-
-            self.knee_pos = [length, mean_height]
-
-        if self.get_bearing(self.hip_pos, self.knee_pos) < self.limits[0] or self.get_bearing(
-            self.knee_pos, self.foot_pos) > self.limits[1]:
-
-            self.knee_pos = self.get_co_ordinate(self.foot_pos, LENGTH, self.limits[1]-180)
-            self.hip_pos = self.get_co_ordinate(self.knee_pos, LENGTH, self.limits[0]+180)
-
-            print(self.foot_pos, self.knee_pos, self.hip_pos)
-
-        return forces
+        TODO
 
     def set_leg_angles(self, theta_one, theta_two):
         """
