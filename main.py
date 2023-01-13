@@ -60,10 +60,23 @@ class GraphLeg(Leg):
         axes (plt.subplots): the axis
         forces (list): the resultant forces
         """
-        x = [self.hip_pos[0], self.hip_pos[0] + forces[0]/50]
-        y = [self.hip_pos[1], self.hip_pos[1] + forces[1]/50]
+        x_one_hip = [self.hip_pos[0], self.hip_pos[0] + forces[0][0]/50]
+        y_one_hip = [self.hip_pos[1], self.hip_pos[1]]
 
-        axes.plot(x,y, color="green")
+        x_two_hip = [self.hip_pos[0], self.hip_pos[0]]
+        y_two_hip = [self.hip_pos[1], self.hip_pos[1] + forces[0][1]/50]
+
+        x_one_knee = [self.knee_pos[0], self.knee_pos[0] + forces[0][0]/50]
+        y_one_knee = [self.knee_pos[1], self.knee_pos[1]]
+
+        x_two_knee = [self.knee_pos[0], self.knee_pos[0]]
+        y_two_knee = [self.knee_pos[1], self.knee_pos[1] + forces[0][1]/50]
+
+        axes.plot(x_one_hip, y_one_hip, color="green")
+        axes.plot(x_two_hip, y_two_hip, color="green")
+
+        axes.plot(x_one_knee, y_one_knee, color="green")
+        axes.plot(x_two_knee, y_two_knee, color="green")
 
     def animate(self, _):
         """
@@ -75,16 +88,17 @@ class GraphLeg(Leg):
         if _ == 1:
             self.__init__()
         ax.clear()
-        ax.set_xlim([-0.05, 0.2])
-        ax.set_ylim([0, 0.3])
+        ax.set_xlim([0, 0.2])
+        ax.set_ylim([0, 0.2])
 
-        forces = self.update_position(self.delta_time)
+        forces = self.get_resultant_forces(self.delta_time)
+        self.update_position(self.delta_time, forces)
 
         self.plot_joints(ax)
         self.plot_leg(ax)
         self.plot_forces(ax, forces)
 
-        plt.text(-0.2, 0.15, f"time: {round(self.elapsed, 2)}s", fontsize=14)
+        plt.text(-0.1, 0.1, f"time: {round(self.elapsed, 2)}s", fontsize=14)
 
 my_leg = GraphLeg()
 anim = FuncAnimation(fig, my_leg.animate, frames=1750, interval=0.01)
