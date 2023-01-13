@@ -108,5 +108,5 @@ class GraphLeg(Leg):
 my_leg = GraphLeg()
 anim = FuncAnimation(fig, my_leg.animate, frames=120, interval=0.01)
 
-anim.save("leg_moving.gif", writer='A. C. Armitage')
+#anim.save("leg_moving.gif", writer='A. C. Armitage')
 plt.show()
