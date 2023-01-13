@@ -7,11 +7,12 @@ Classes:
 import numpy as np
 
 # Simulation parameters
-STARTING_HEIGHT = 0.3  # m
+STARTING_HEIGHT = 0.3   # m
 LENGTH = 0.075          # m
 WIDTH = 0.005           # m
 MASS = 0.15             # kg
 TORQUE = 0.206          # Nm
+G = 9.81                # gravity
 
 class Servo:
     """
@@ -76,7 +77,7 @@ class Leg:
         self.elapsed = 0
 
         # joint definitions
-        self.hip_pos = [0, 0]
+        self.hip_pos = [0.075, 0.17]
         self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, theta[0])
         self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH, theta[1])
 
@@ -94,10 +95,26 @@ class Leg:
         Returns:
             Newtons: The force vector output
         """
-        return [0, 0]
+        self.elapsed += delta_time
+
+        weight = MASS * G
+
+        resultant_hip_global = [0, 0]
+        resultant_hip_force = weight * np.cos((360 - self.theta_one)* np.pi/180)
+        # resultant_hip_force -= self.servo_one.get_torque_output(self.theta_one, delta_time)
+        resultant_hip_global[0] = ( resultant_hip_force *np.sin(180-self.theta_one* np.pi/180))
+        resultant_hip_global[1] = ( resultant_hip_force *np.cos(180-self.theta_one* np.pi/180))
+
+        resultant_knee_global = [0, 0]
+        resultant_knee_force = weight * np.sin((360 - self.theta_one)* np.pi/180)
+        # resultant_knee_force -= self.servo_one.get_torque_output(self.theta_one, delta_time)
+        resultant_knee_global[0] = ( resultant_knee_force *np.sin(180-self.theta_one* np.pi/180))
+        resultant_knee_global[1] = - ( resultant_knee_force *np.cos(180-self.theta_one* np.pi/180))
+
+        return [resultant_hip_global, resultant_knee_global]
 
 
-    def update_position(self, delta_time:'seconds')->'Newtons':
+    def update_position(self, delta_time:'seconds', forces:'Newtons'):
         """
         Calculates the position of the hip
 
