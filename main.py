@@ -22,7 +22,7 @@ class GraphLeg(Leg):
     def __init__(self):
         self.delta_time = 0.001
 
-        super().__init__((135, 225), (120, 240))
+        super().__init__((150, 210), (120, 240))
 
     def plot_joints(self, axes):
         """
@@ -60,17 +60,17 @@ class GraphLeg(Leg):
         axes (plt.subplots): the axis
         forces (list): the resultant forces
         """
-        x_one_hip = [self.hip_pos[0], self.hip_pos[0] + forces[0][0]/50]
+        x_one_hip = [self.hip_pos[0], self.hip_pos[0] + forces[0][0]/10]
         y_one_hip = [self.hip_pos[1], self.hip_pos[1]]
 
         x_two_hip = [self.hip_pos[0], self.hip_pos[0]]
-        y_two_hip = [self.hip_pos[1], self.hip_pos[1] + forces[0][1]/50]
+        y_two_hip = [self.hip_pos[1], self.hip_pos[1] + forces[0][1]/10]
 
-        x_one_knee = [self.knee_pos[0], self.knee_pos[0] + forces[0][0]/50]
+        x_one_knee = [self.knee_pos[0], self.knee_pos[0] + forces[1][0]/10]
         y_one_knee = [self.knee_pos[1], self.knee_pos[1]]
 
         x_two_knee = [self.knee_pos[0], self.knee_pos[0]]
-        y_two_knee = [self.knee_pos[1], self.knee_pos[1] + forces[0][1]/50]
+        y_two_knee = [self.knee_pos[1], self.knee_pos[1] + forces[1][1]/10]
 
         axes.plot(x_one_hip, y_one_hip, color="green")
         axes.plot(x_two_hip, y_two_hip, color="green")
@@ -101,7 +101,7 @@ class GraphLeg(Leg):
         plt.text(-0.1, 0.1, f"time: {round(self.elapsed, 2)}s", fontsize=14)
 
 my_leg = GraphLeg()
-anim = FuncAnimation(fig, my_leg.animate, frames=1750, interval=0.01)
+anim = FuncAnimation(fig, my_leg.animate, frames=10, interval=0.01)
 
-#anim.save('leg_under_free_fall.gif', writer='A. C. Armitage')
-plt.show()
+anim.save('force_analysis_stand.gif', writer='A. C. Armitage')
+#plt.show()
