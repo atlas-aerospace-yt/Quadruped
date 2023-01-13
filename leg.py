@@ -108,7 +108,7 @@ class Leg:
         resultant_knee_force = weight * np.sin((360 - self.theta_one)* np.pi/180)
         resultant_knee_global[0] = resultant_knee_force * np.sin((180-self.theta_two) * np.pi/180)
         resultant_knee_global[1] = resultant_knee_force * np.cos((180-self.theta_two) * np.pi/180)
-        print([resultant_hip_global, resultant_knee_global])
+
         return [resultant_hip_global, resultant_knee_global]
 
 
@@ -122,7 +122,8 @@ class Leg:
         Returns:
             list: the position of the hip
         """
-        pass
+        self.knee_pos = self.get_co_ordinate(self.hip_pos, LENGTH, self.theta_one)
+        self.foot_pos = self.get_co_ordinate(self.knee_pos, LENGTH,self.theta_two)
 
     def set_leg_angles(self, theta_one, theta_two):
         """
