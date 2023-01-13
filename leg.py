@@ -10,7 +10,7 @@ import numpy as np
 STARTING_HEIGHT = 0.3   # m
 LENGTH = 0.075          # m
 WIDTH = 0.005           # m
-MASS = 0.15             # kg
+MASS = 0.05             # kg
 TORQUE = 0.206          # Nm
 G = 9.81                # gravity
 
@@ -71,8 +71,8 @@ class Leg:
         # hard mechanical limits
         self.limits = limits
 
-        self.theta_one = 0
-        self.theta_two = 0
+        self.theta_one = theta[0]
+        self.theta_two = theta[1]
 
         self.elapsed = 0
 
@@ -101,16 +101,14 @@ class Leg:
 
         resultant_hip_global = [0, 0]
         resultant_hip_force = weight * np.cos((360 - self.theta_one)* np.pi/180)
-        # resultant_hip_force -= self.servo_one.get_torque_output(self.theta_one, delta_time)
-        resultant_hip_global[0] = ( resultant_hip_force *np.sin(180-self.theta_one* np.pi/180))
-        resultant_hip_global[1] = ( resultant_hip_force *np.cos(180-self.theta_one* np.pi/180))
+        resultant_hip_global[0] = resultant_hip_force * np.sin((180-self.theta_one) * np.pi/180)
+        resultant_hip_global[1] = resultant_hip_force * np.cos((180-self.theta_one) * np.pi/180)
 
         resultant_knee_global = [0, 0]
         resultant_knee_force = weight * np.sin((360 - self.theta_one)* np.pi/180)
-        # resultant_knee_force -= self.servo_one.get_torque_output(self.theta_one, delta_time)
-        resultant_knee_global[0] = ( resultant_knee_force *np.sin(180-self.theta_one* np.pi/180))
-        resultant_knee_global[1] = - ( resultant_knee_force *np.cos(180-self.theta_one* np.pi/180))
-
+        resultant_knee_global[0] = resultant_knee_force * np.sin((180-self.theta_two) * np.pi/180)
+        resultant_knee_global[1] = resultant_knee_force * np.cos((180-self.theta_two) * np.pi/180)
+        print([resultant_hip_global, resultant_knee_global])
         return [resultant_hip_global, resultant_knee_global]
 
 
