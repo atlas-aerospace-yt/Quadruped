@@ -22,7 +22,7 @@ class GraphLeg(Leg):
     def __init__(self):
         self.delta_time = 0.001
 
-        super().__init__((150, 210), (120, 240))
+        super().__init__((180, 180), (120, 240))
 
     def plot_joints(self, axes):
         """
@@ -85,8 +85,13 @@ class GraphLeg(Leg):
         Args:
             _ (int): unused variable passed in from FuncAnimation
         """
-        if _ == 1:
-            self.__init__()
+        if _ < 60:
+            self.theta_one -= 1
+            self.theta_two += 1
+        else:
+            self.theta_one += 1
+            self.theta_two -= 1
+
         ax.clear()
         ax.set_xlim([0, 0.2])
         ax.set_ylim([0, 0.2])
@@ -101,7 +106,7 @@ class GraphLeg(Leg):
         plt.text(-0.1, 0.1, f"time: {round(self.elapsed, 2)}s", fontsize=14)
 
 my_leg = GraphLeg()
-anim = FuncAnimation(fig, my_leg.animate, frames=10, interval=0.01)
+anim = FuncAnimation(fig, my_leg.animate, frames=120, interval=0.01)
 
-anim.save('force_analysis_stand.gif', writer='A. C. Armitage')
-#plt.show()
+anim.save("leg_moving.gif", writer='A. C. Armitage')
+plt.show()
