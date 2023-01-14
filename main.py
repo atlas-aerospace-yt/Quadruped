@@ -106,7 +106,7 @@ class GraphLeg(Leg):
         plt.text(-0.1, 0.1, f"time: {round(self.elapsed, 2)}s", fontsize=14)
 
 my_leg = GraphLeg()
-anim = FuncAnimation(fig, my_leg.animate, frames=120, interval=0.01)
+anim = FuncAnimation(fig, my_leg.animate, frames=121, interval=0.01)
 
 #anim.save("leg_moving.gif", writer='A. C. Armitage')
 plt.show()
