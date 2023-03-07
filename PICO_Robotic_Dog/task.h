@@ -26,6 +26,6 @@ namespace task
       float knee_value = subtask::get_knee_output(-0.04f, 0.12f);
       float hip_value = subtask::get_hip_output(-0.04f, 0.12f);
 
-      actuators::write(knee_value, hip_value);
+      actuators::write();
     }
 }
