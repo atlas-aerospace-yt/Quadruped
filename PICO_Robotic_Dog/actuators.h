@@ -17,11 +17,11 @@ namespace actuators{
 
   // Globals can be defined here
   const int num_of_servos = 8;
-  int initial_values[8] = {0, 180, 180, 0, 0, 180, 180, 0};
-  int servo_values[8] = {0, 180, 180, 0, 0, 180, 180, 0};
+  int initial_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
+  int servo_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
+  int pins[] = {14, 15, 12, 13, 10, 11, 8, 9};
 
   // SideKick actuator_struct definitions
-  Array<int,8> pins(14, 15, 12, 13, 10, 11, 8, 9);
   ActuatorGroup<Servo,8> dog;
 
   void init()
@@ -32,10 +32,7 @@ namespace actuators{
 
   void write()
   {
-    for(int i=0; i<num_of_servos; i++)
-    {
-        dog.write(i, servo_values[i]);
-    }
+    dog.write(initial_values);
   }
 
 }  // namespace actuators
