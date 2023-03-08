@@ -23,8 +23,8 @@ namespace task
 
     void Loop()
     {
-      float knee_value = subtask::get_knee_output(-0.04f, 0.12f);
-      float hip_value = subtask::get_hip_output(-0.04f, 0.12f);
+      //float knee_value = subtask::get_knee_output(-0.04f, 0.12f);
+      //float hip_value = subtask::get_hip_output(-0.04f, 0.12f);
 
       actuators::write();
     }
