@@ -7,7 +7,7 @@
 #define GEAR_RATIO_RECIPROCAL 2/3
 
 namespace subtask {
-
+  // mathematical functions for leg position
   float get_alpha(float x, float y)
   {
     float length_new = 0.5f * sqrt(sq(x) + sq(y));
