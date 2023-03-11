@@ -26,8 +26,8 @@ namespace subtask {
   // wrapper function to get the hip_output
   float get_hip_output(float x, float y)
   {
-    float alpha = get_alpha(x, y);
-    float theta = get_theta(x, y);
+    float alpha = get_alpha(-x, y);
+    float theta = get_theta(-x, y);
 
     return GEAR_RATIO * (alpha + theta);
   }
@@ -35,9 +35,9 @@ namespace subtask {
   // wrapper function to get the knee_output
   float get_knee_output(float x, float y)
   {
-    float alpha = get_alpha(x, y);
+    float alpha = get_alpha(-x, y);
     float beta = get_beta(alpha);
-    float theta = get_theta(x, y);
+    float theta = get_theta(-x, y);
     float u = 180 - (1/2 * theta + beta);
 
     return GEAR_RATIO * u;
