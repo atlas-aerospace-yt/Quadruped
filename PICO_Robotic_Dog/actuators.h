@@ -17,37 +17,47 @@ namespace actuators{
 
   // Globals can be defined here
   const int num_of_servos = 8;
-  int initial_values[] = {60, 120, 120, 60, 60, 120, 120, 60};
-  int servo_values[] = {50, 240, 240, 50, 50, 240, 240, 50};
+  int initial_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
+  int servo_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
   int pins[] = {14, 15, 12, 13, 10, 11, 8, 9};
   int pos;
 
+  Servo hip;
+  Servo knee;
+
   // SideKick actuator_struct definitions
-  ActuatorGroup<Servo,8> dog;
+  ActuatorGroup<Servo,4> dog;
 
   void init()
   {
     dog.attach(pins);
-    dog.writeAll(90);
   }
 
-
-  void write()
+  void write_leg()
   {
-    for (pos = 50; pos <= 240; pos += 1)
-    {
-      dog.writeAll(pos);
-      delay(15);
-      PRINT(pos);
-      END_LOG;
-    }
-    for (pos = 240; pos >= 50; pos -= 1)
-    {
-      dog.writeAll(pos);
-      delay(15);
-      PRINT(pos);
-      END_LOG;
-    }
+
   }
 
+  void write(int values[])
+  {
+    for (int i=0; i<8; i++)
+    {
+      if (initial_values[i] > 0)
+      {
+        servo_values[i] = 180 - values[i];
+      }
+      else
+      {
+        servo_values[i] = values[i];
+      }
+    }
+    for (int i=0; i<8; i++)
+    {
+      PRINT(servo_values[i]);
+      PRINT(" , ");
+    }
+    END_LOG;
+
+    dog.write(servo_values);
+  }
 }  // namespace actuators
