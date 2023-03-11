@@ -2,7 +2,7 @@
 
 #include "utility.h"
 
-#define LENGTH 0.075f
+#define LENGTH 7.5f
 #define GEAR_RATIO 3/2
 
 namespace subtask {
@@ -38,7 +38,7 @@ namespace subtask {
     float alpha = get_alpha(-x, y);
     float beta = get_beta(alpha);
     float theta = get_theta(-x, y);
-    float u = 180 - (1/2 * theta + beta);
+    float u = 180 - (1/2 * (theta + alpha) + beta);
 
     return GEAR_RATIO * u;
   }
