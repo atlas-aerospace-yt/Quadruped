@@ -4,7 +4,6 @@
 
 #define LENGTH 0.075f
 #define GEAR_RATIO 3/2
-#define GEAR_RATIO_RECIPROCAL 2/3
 
 namespace subtask {
   // mathematical functions for leg position
@@ -39,8 +38,8 @@ namespace subtask {
     float alpha = get_alpha(x, y);
     float beta = get_beta(alpha);
     float theta = get_theta(x, y);
-    float u = (1 - GEAR_RATIO_RECIPROCAL) * (alpha + theta);
+    float u = 180 - (1/2 * theta + beta);
 
-    return GEAR_RATIO * (180 - (u + beta));
+    return GEAR_RATIO * u;
   }
 }
