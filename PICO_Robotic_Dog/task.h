@@ -30,31 +30,31 @@ namespace task
 
   void Loop()
   {
-    for (float height=0.09f; height < 0.15f; height+= 0.01f)
+    for (float width=0; width < 0.04f; width+= 0.01f)
     {
       for (int i=0; i<8; i ++)
       {
         if (i%2 == 0){
-          values[i] = subtask::get_hip_output(0, height);
+          values[i] = subtask::get_hip_output(width, 0.12f);
         }
         else
         {
-          values[i] = subtask::get_knee_output(0, height);
+          values[i] = subtask::get_knee_output(width, 0.12f);
         }
       }
       actuators::write(values);
       delay(200);
     }
-    for (float height=0.15f; height > 0.09f; height-= 0.01f)
+    for (float width=0.04f; width > 0; width-= 0.01f)
     {
       for (int i=0; i<8; i ++)
       {
         if (i%2 == 0){
-          values[i] = subtask::get_hip_output(0, height);
+          values[i] = subtask::get_hip_output(width, 0.12f);
         }
         else
         {
-          values[i] = subtask::get_knee_output(0, height);
+          values[i] = subtask::get_knee_output(width, 0.12f);
         }
       }
       actuators::write(values);
