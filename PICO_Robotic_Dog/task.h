@@ -30,33 +30,37 @@ namespace task
 
   void Loop()
   {
-    for (float width=0; width < 0.04f; width+= 0.01f)
+    for (int width=0; width<7; width++)
     {
       for (int i=0; i<8; i ++)
       {
         if (i%2 == 0){
-          values[i] = subtask::get_hip_output(width, 0.12f);
+          values[i] = subtask::get_hip_output(width, 12);
         }
         else
         {
-          values[i] = subtask::get_knee_output(width, 0.12f);
+          values[i] = subtask::get_knee_output(width, 12);
         }
       }
+      PRINT(width);
+      PRINT(" , ");
       actuators::write(values);
       delay(200);
     }
-    for (float width=0.04f; width > 0; width-= 0.01f)
+    for (int width=7; width>0; width--)
     {
       for (int i=0; i<8; i ++)
       {
         if (i%2 == 0){
-          values[i] = subtask::get_hip_output(width, 0.12f);
+          values[i] = subtask::get_hip_output(width, 12);
         }
         else
         {
-          values[i] = subtask::get_knee_output(width, 0.12f);
+          values[i] = subtask::get_knee_output(width, 12);
         }
       }
+      PRINT(width);
+      PRINT(" , ");
       actuators::write(values);
       delay(200);
     }
