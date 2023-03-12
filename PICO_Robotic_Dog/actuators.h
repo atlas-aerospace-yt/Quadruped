@@ -26,7 +26,7 @@ namespace actuators{
   Servo knee;
 
   // SideKick actuator_struct definitions
-  ActuatorGroup<Servo,4> dog;
+  ActuatorGroup<Servo,8> dog;
 
   void init()
   {
