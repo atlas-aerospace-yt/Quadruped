@@ -33,9 +33,10 @@ namespace actuators{
     dog.attach(pins);
   }
 
-  void write_leg()
+  void test()
   {
-
+    dog.write(initial_values);
+    delay(2500);
   }
 
   void write(int values[])
