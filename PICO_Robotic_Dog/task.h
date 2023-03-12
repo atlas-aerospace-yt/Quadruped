@@ -30,7 +30,7 @@ namespace task
 
   void Loop()
   {
-    for (int width=0; width<7; width++)
+    for (int width=0; width<8; width++)
     {
       for (int i=0; i<8; i ++)
       {
@@ -47,16 +47,16 @@ namespace task
       actuators::write(values);
       delay(200);
     }
-    for (int width=7; width>0; width--)
+    for (int width=8; width>0; width--)
     {
       for (int i=0; i<8; i ++)
       {
         if (i%2 == 0){
-          values[i] = subtask::get_hip_output(width, 12);
+          values[i] = subtask::get_hip_output(width, 10);
         }
         else
         {
-          values[i] = subtask::get_knee_output(width, 12);
+          values[i] = subtask::get_knee_output(width, 10);
         }
       }
       PRINT(width);
