@@ -8,10 +8,14 @@
 
 #define NUM_OF_LEGS 4
 
+#define UP_HEIGHT 14
+#define DOWN_HEIGHT 10
+
 namespace task
 {
 
   int values[8];
+  int height;
   float hip;
   float knee;
 
@@ -31,7 +35,7 @@ namespace task
 
   void Loop()
   {
-    for (int width=0; width<8; width++)
+    /*for (int width=0; width<8; width++)
     {
       for (int i=0; i<8; i ++)
       {
@@ -65,41 +69,45 @@ namespace task
       actuators::write(values);
       delay(100);
     }
-    delay(1000);
-    for (int height=15; height>8; height--)
+    delay(1000);*/
+
+    if (height == UP_HEIGHT)
     {
-      for (int i=0; i<8; i ++)
+      height = DOWN_HEIGHT;
+    }
+    else
+    {
+      height = UP_HEIGHT;
+    }
+
+    for (int i=0; i<8; i++)
+    {
+      if (i%2 == 0)
       {
-        if (i%2 == 0){
+        if (i > 3)
+        {
           values[i] = subtask::get_hip_output(0, height);
         }
         else
         {
-          values[i] = subtask::get_knee_output(0, height);
+          values[i] = subtask::get_hip_output(0, UP_HEIGHT);
         }
       }
-      PRINT(height);
-      PRINT(" , ");
-      actuators::write(values);
-      delay(100);
-    }
-    for (int height=8; height<15; height++)
-    {
-      for (int i=0; i<8; i ++)
+      else
       {
-        if (i%2 == 0){
-          values[i] = subtask::get_hip_output(0, height);
-        }
-        else
+        if (i > 3)
         {
           values[i] = subtask::get_knee_output(0, height);
         }
+        else
+        {
+          values[i] = subtask::get_knee_output(0, UP_HEIGHT);
+        }
       }
-      PRINT(height);
-      PRINT(" , ");
-      actuators::write(values);
-      delay(100);
     }
-    delay(1000);
+
+    actuators::write(values);
+    delay(250);
+
   }
 }
