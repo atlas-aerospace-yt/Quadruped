@@ -12,6 +12,7 @@
 #include <Servo.h>
 
 //Include your Actuator libraries here
+#define INTERP_PTS 100
 
 namespace actuators{
 
@@ -19,6 +20,7 @@ namespace actuators{
   const int num_of_servos = 8;
   int initial_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
   int servo_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
+  int* servo_pos;
   int pins[] = {14, 15, 12, 13, 10, 11, 8, 9};
   int pos;
 
@@ -52,13 +54,29 @@ namespace actuators{
         servo_values[i] = values[i];
       }
     }
+
+    for (int i=0; i<8; i++)
+    {
+      dog.initLerp()
+    }
+
+    dog.write(servo_values);
+    servo_pos = dog.readAll();
+
+    PRINT("READ: ")
+    for (int i=0; i<8; i++)
+    {
+      PRINT(servo_pos[i]);
+      PRINT(" , ");
+    }
+    END_LOG;
+
+    PRINT("Write: ")
     for (int i=0; i<8; i++)
     {
       PRINT(servo_values[i]);
       PRINT(" , ");
     }
     END_LOG;
-
-    dog.write(servo_values);
   }
 }  // namespace actuators
