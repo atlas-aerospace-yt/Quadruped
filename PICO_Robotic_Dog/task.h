@@ -82,6 +82,7 @@ namespace task
 
     for (int i=0; i<8; i++)
     {
+      // if the actuator is a hip, compute a hip angle
       if (i%2 == 0)
       {
         if (i > 3)
@@ -93,6 +94,7 @@ namespace task
           values[i] = subtask::get_hip_output(0, UP_HEIGHT);
         }
       }
+      // otherwise if the actuator is a knee, compute a knee angle
       else
       {
         if (i > 3)
