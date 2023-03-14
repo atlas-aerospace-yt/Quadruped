@@ -6,6 +6,48 @@
 #define GEAR_RATIO 3/2
 
 namespace subtask {
+
+  /*
+  *
+  * Gait and walking motion calculations are in this section
+  * of the code.
+  *
+  */
+
+  const int gait[] = {{0, 14}, {2, 14}, {4, 14}, {0, 10}};
+
+  int stats[] = {0, 2, 0, 2};
+  int positions[8];
+
+  void update_gait()
+  {
+    for (int i=0; i<sizeof(stats); i++)
+    {
+      stats[i] ++;
+      if (stats[i] > sizeof(gait)-1)
+      {
+        stats[i] = 0;
+      }
+    }
+  }
+
+  void get_positions()
+  {
+    for (int i=0; i<sizeof(stats); i++)
+    {
+      for (int j=0; j<sizeof(stats[i]); i++)
+      {
+
+      }
+    }
+  }
+  /*
+  *
+  * Inverse kinematic calculations are in this section of
+  * the code.
+  *
+  */
+
   // mathematical functions for leg position
   float get_alpha(float x, float y)
   {
