@@ -55,15 +55,10 @@ namespace actuators{
       }
     }
 
-    for (int i=0; i<8; i++)
-    {
-      dog.initLerp()
-    }
-
     dog.write(servo_values);
     servo_pos = dog.readAll();
 
-    PRINT("READ: ")
+    PRINT("Read: ")
     for (int i=0; i<8; i++)
     {
       PRINT(servo_pos[i]);
