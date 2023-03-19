@@ -3,7 +3,10 @@
 #include "utility.h"
 
 #define LENGTH 7.5f
-#define GEAR_RATIO 3/2
+#define GEAR_RATIO 2
+
+#define MAX 180
+#define MIN 0
 
 namespace subtask {
 
@@ -38,7 +41,7 @@ namespace subtask {
     float theta = get_theta(x, y);
     float hip = GEAR_RATIO * (alpha + theta);
 
-    return hip < 0 ? 0 : hip;
+    return hip < MIN ? MIN : hip > MAX ? MAX : hip;
   }
 
   // wrapper function to get the knee_output
@@ -47,10 +50,10 @@ namespace subtask {
     float alpha = get_alpha(x, y);
     float beta = get_beta(alpha);
     float theta = get_theta(x, y);
-    float u = 180 - (1/2 * (theta + alpha) + beta);
+    float u = 180 - ((theta + alpha) + beta);
     float knee = GEAR_RATIO * u;
 
-    return knee < 0 ? 0 : knee;
+    return knee < MIN ? MIN : knee > MAX ? MAX : knee;
   }
 
   /*
@@ -60,7 +63,8 @@ namespace subtask {
   *
   */
 
-  int gait[][2] = {{-4, 14}, {0, 14}, {4, 14}, {0, 6}};
+  int front_gait[][2] = {{-5, 14}, {-2, 14}, {0, 14}, {0, 8}};
+  int back_gait[][2] = {{-5, 12}, {-2, 12}, {0, 12}, {0, 8}};
   int stats[] = {2, 0, 0, 2};
   int positions[8];
 
@@ -81,22 +85,20 @@ namespace subtask {
     for (int i=0; i<4; i++)
     {
       int stat = stats[i];
-      PRINT("Gait: ")
-      PRINT(gait[stat][0]);
-      PRINT(" , ");
-      PRINT(gait[stat][1]);
-      PRINT(" , ");
-      PRINT("Servo: ")
-      PRINT(get_hip_output(gait[stat][0], gait[stat][1]));
-      PRINT(" , ")
-      PRINT(get_knee_output(gait[stat][0], gait[stat][1]));
-      PRINT(" , ")
 
       int hip_indx = 2 * i;
       int knee_indx = 2 * i + 1;
 
-      positions[hip_indx] = get_hip_output(gait[stat][0], gait[stat][1]);
-      positions[knee_indx] = get_knee_output(gait[stat][0], gait[stat][1]);
+      if (i < 2)
+      {
+        positions[hip_indx] = get_hip_output(front_gait[stat][0], front_gait[stat][1]);
+        positions[knee_indx] = get_knee_output(front_gait[stat][0], front_gait[stat][1]);
+      }
+      else
+      {
+        positions[hip_indx] = get_hip_output(back_gait[stat][0], back_gait[stat][1]);
+        positions[knee_indx] = get_knee_output(back_gait[stat][0], back_gait[stat][1]);
+      }
     }
   }
 }
