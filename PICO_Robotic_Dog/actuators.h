@@ -9,6 +9,7 @@
 //-----Internals------
 
 // Include your Actuator libraries here
+#include "lerp.h"
 #include <Servo.h>
 
 //Include your Actuator libraries here
@@ -20,7 +21,7 @@ namespace actuators{
   const int num_of_servos = 8;
   int initial_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
   int servo_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
-  int* servo_pos;
+  int *servo_pos;
   int pins[] = {14, 15, 12, 13, 10, 11, 8, 9};
   int pos;
 
@@ -43,6 +44,7 @@ namespace actuators{
 
   void write(int values[])
   {
+
     for (int i=0; i<8; i++)
     {
       if (initial_values[i] > 0)
@@ -55,8 +57,22 @@ namespace actuators{
       }
     }
 
-    dog.write(servo_values);
     servo_pos = dog.readAll();
+
+    Array<int, 16> lerp_ting;
+
+    for (int i; i<8; i++)
+    {
+      float even = 2 * i;
+      float odd = 2 * i + 1;
+      lerp_ting[even] = *(servo_pos+i);
+      lerp_ting[odd] = servo_values[i];
+    }
+
+    Lerp<8> lerp(lerp_ting, 50);
+
+
+    dog.write(servo_values);
 
     PRINT("Read: ")
     for (int i=0; i<8; i++)
