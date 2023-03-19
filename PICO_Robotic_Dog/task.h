@@ -100,7 +100,7 @@ namespace task
         }
       }
       actuators::write(values);
-      delay(100);
+      delay(500);
     }
     for (int i=DOWN_HEIGHT; i<UP_HEIGHT; i++)
     {
@@ -119,7 +119,7 @@ namespace task
         }
       }
       actuators::write(values);
-      delay(100);
+      delay(500);
     }
   }
 
@@ -206,19 +206,19 @@ namespace task
     // A walking demo without any forms of control.
     //
 
-    /*subtask::update_gait();
+    subtask::update_gait();
     subtask::get_positions();
     actuators::write(subtask::positions);
 
-    delay(100);*/
+    delay(100);
 
-    for (int i=0; i<NUM_OF_LOOPS; i++){
+    /*for (int i=0; i<NUM_OF_LOOPS; i++){
       Bop();
     }
     PushUp();
     for (int i=0; i<NUM_OF_LOOPS; i++){
       Twerk();
     }
-    PushUp();
+    PushUp();*/
   }
 }
