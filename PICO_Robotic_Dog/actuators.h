@@ -59,7 +59,7 @@ namespace actuators{
 
     servo_pos = dog.readAll();
 
-    Array<int, 16> lerp_ting;
+    /*Array<int, 16> lerp_ting;
 
     for (int i; i<8; i++)
     {
@@ -69,7 +69,7 @@ namespace actuators{
       lerp_ting[odd] = servo_values[i];
     }
 
-    Lerp<8> lerp(lerp_ting, 50);
+    Lerp<8> lerp(lerp_ting, 50);*/
 
 
     dog.write(servo_values);
