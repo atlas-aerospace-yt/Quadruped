@@ -63,9 +63,12 @@ namespace subtask {
   *
   */
 
-  int front_gait[][2] = {{-5, 14}, {-2, 14}, {0, 14}, {0, 8}};
-  int back_gait[][2] = {{-5, 12}, {-2, 12}, {0, 12}, {0, 8}};
-  int stats[] = {2, 0, 0, 2};
+  // front legs are mirrored
+  int front_gait[][2] = {{0, 14}, {-2, 14}, {-5, 14}, {-2, 8}};
+  // back legs are not mirrored
+  int back_gait[][2] = {{-5, 14}, {-2, 14}, {0, 14}, {-2, 8}};
+  // the current gait position of each leg {FL, FR, BL, BR}
+  int stats[] = {0, 2, 1, 3};
   int positions[8];
 
   void update_gait()
