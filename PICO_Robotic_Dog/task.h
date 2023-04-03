@@ -14,7 +14,6 @@
 
 namespace task
 {
-  int* walk_values;
   int values[8];
   int height;
   float hip;
@@ -210,7 +209,7 @@ namespace task
     subtask::get_positions();
     actuators::write(subtask::positions);
 
-    delay(100);
+    delay(150);
 
     /*for (int i=0; i<NUM_OF_LOOPS; i++){
       Bop();
