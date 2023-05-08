@@ -3,10 +3,12 @@
 #include "utility.h"
 
 #define LENGTH 7.5f
-#define GEAR_RATIO 2
 
 #define MAX 180
 #define MIN 0
+
+#define gamma(x) -1/3 * x + 60
+#define u(x) -36/19 * x + 180
 
 namespace subtask {
 
@@ -34,12 +36,14 @@ namespace subtask {
     return atan(x/y) * 180.0f/PI;
   }
 
+
   // wrapper function to get the hip_output
   int get_hip_output(float x, float y)
   {
     float alpha = get_alpha(x, y);
     float theta = get_theta(x, y);
-    float hip = GEAR_RATIO * (alpha + theta);
+
+    float hip = u(alpha + theta);
 
     return hip < MIN ? MIN : hip > MAX ? MAX : hip;
   }
@@ -50,9 +54,10 @@ namespace subtask {
     float alpha = get_alpha(x, y);
     float beta = get_beta(alpha);
     float theta = get_theta(x, y);
-    float u = 180 - ((theta + alpha) + beta);
-    float knee = GEAR_RATIO * u;
 
+    float knee = 180 - beta - gamma(alpha + theta);
+    knee = u(knee);
+  
     return knee < MIN ? MIN : knee > MAX ? MAX : knee;
   }
 
