@@ -205,6 +205,7 @@ namespace task
     // A walking demo without any forms of control.
     //
 
+    PRINT("Walking...")
     subtask::update_gait();
     subtask::get_positions();
     actuators::write(subtask::positions);
