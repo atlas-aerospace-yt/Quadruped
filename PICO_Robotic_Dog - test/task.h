@@ -36,24 +36,28 @@ namespace task
     // A walking demo without any forms of control.
     //
 
-    for (int i=3; i>-3; i--){
-      knee = subtask::get_knee_output(i, 9);
-      hip = subtask::get_hip_output(i, 9);
+    for (int i=15; i>10; i--){
+      knee = subtask::get_knee_output(0, i);
+      hip = subtask::get_hip_output(0, i);
 
-      actuators::hip.write(hip);
-      actuators::knee.write(knee);
+      actuators::hip_one.write(subtask::get_servo_angle_backward(hip));
+      actuators::knee_one.write(subtask::get_servo_angle_forward(knee));
+      actuators::hip_two.write(subtask::get_servo_angle_forward(hip));
+      actuators::knee_two.write(subtask::get_servo_angle_backward(knee));
 
-      delay(50);
+      delay(100);
     }
 
-    for (int i=-3; i<3; i++){
-      knee = subtask::get_knee_output(i, 9);
-      hip = subtask::get_hip_output(i, 9);
+    for (int i=10; i<15; i++){
+      knee = subtask::get_knee_output(0, i);
+      hip = subtask::get_hip_output(0, i);
 
-      actuators::hip.write(hip);
-      actuators::knee.write(knee);
+      actuators::hip_one.write(subtask::get_servo_angle_backward(hip));
+      actuators::knee_one.write(subtask::get_servo_angle_forward(knee));
+      actuators::hip_two.write(subtask::get_servo_angle_forward(hip));
+      actuators::knee_two.write(subtask::get_servo_angle_backward(knee));
 
-      delay(50);
+      delay(100);
     }
   }
 }
