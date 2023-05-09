@@ -13,81 +13,39 @@
 #include <Servo.h>
 
 //Include your Actuator libraries here
-#define INTERP_PTS 100
 
 namespace actuators{
 
   // Globals can be defined here
-  const int num_of_servos = 8;
-  int initial_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
-  int servo_values[] = {0, 180, 180, 0, 0, 180, 180, 0};
-  int *servo_pos;
-  int pins[] = {14, 15, 12, 13, 10, 11, 8, 9};
-  int pos;
-
-  Servo hip;
-  Servo knee;
+  int pins_bl[] = {15, 14};
+  int pins_br[] = {13, 12};
+  int pins_fl[] = {11, 10};
+  int pins_fr[] = {9, 8};
 
   // SideKick actuator_struct definitions
-  ActuatorGroup<Servo,8> dog;
+  ActuatorGroup<Servo,2> leg_bl;
+  ActuatorGroup<Servo,2> leg_br;
+  ActuatorGroup<Servo,2> leg_fl;
+  ActuatorGroup<Servo,2> leg_fr;
 
   void init()
   {
-    dog.attach(pins);
+    leg_bl.attach(pins_bl);
+    leg_br.attach(pins_br);
+    leg_fl.attach(pins_fl);
+    leg_fr.attach(pins_fr);
   }
 
   void test()
   {
-    dog.write(initial_values);
+    int pos_forward[] = {0, 180};
+    int pos_backward[] = {180, 0};
+
+    leg_bl.write(pos_backward);
+    leg_br.write(pos_forward);
+    leg_fl.write(pos_backward);
+    leg_fr.write(pos_forward);
+
     delay(2500);
-  }
-
-  void write(int values[])
-  {
-
-    for (int i=0; i<8; i++)
-    {
-      if (initial_values[i] > 0)
-      {
-        servo_values[i] = 180 - values[i];
-      }
-      else
-      {
-        servo_values[i] = values[i];
-      }
-    }
-
-    servo_pos = dog.readAll();
-
-    /*Array<int, 16> lerp_ting;
-
-    for (int i; i<8; i++)
-    {
-      float even = 2 * i;
-      float odd = 2 * i + 1;
-      lerp_ting[even] = *(servo_pos+i);
-      lerp_ting[odd] = servo_values[i];
-    }
-
-    Lerp<8> lerp(lerp_ting, 50);*/
-
-
-    dog.write(servo_values);
-
-    PRINT("Read: ")
-    for (int i=0; i<8; i++)
-    {
-      PRINT(servo_pos[i]);
-      PRINT(" , ");
-    }
-    END_LOG;
-
-    PRINT("Write: ")
-    for (int i=0; i<8; i++)
-    {
-      PRINT(servo_values[i]);
-      PRINT(" , ");
-    }
-    END_LOG;
   }
 }  // namespace actuators
