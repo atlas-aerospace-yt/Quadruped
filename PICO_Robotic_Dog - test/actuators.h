@@ -13,18 +13,21 @@
 #include <Servo.h>
 
 //Include your Actuator libraries here
-#define INTERP_PTS 100
 
 namespace actuators{
 
   // Globals can be defined here
-  Servo hip;
-  Servo knee;
+  Servo hip_one;
+  Servo knee_one;
+  Servo hip_two;
+  Servo knee_two;
 
   void init()
   {
-    hip.attach(12);
-    knee.attach(13);
+    hip_one.attach(12);
+    knee_one.attach(13);
+    hip_two.attach(10);
+    knee_two.attach(11);
   }
 
 }
