@@ -8,8 +8,8 @@
 #define MIN 0
 
 #define GAMMA(x) 12/19 * x
-#define U_HIP(x) -36/19 * x + 180
-#define U_KNEE(x) 36/19 * x
+#define U_BACKWARD(x) -36/19 * x + 180
+#define U_FORWARD(x) 36/19 * x
 
 namespace subtask {
 
@@ -44,10 +44,7 @@ namespace subtask {
   {
     float alpha = get_alpha(x, y);
     float theta = get_theta(x, y);
-
-    float hip = U_HIP(alpha + theta);
-
-    END_LOG;
+    float hip = alpha + theta;
 
     return hip < MIN ? MIN : hip > MAX ? MAX : hip;
   }
@@ -59,12 +56,22 @@ namespace subtask {
     float beta = get_beta(alpha);
     float theta = get_theta(x, y);
 
-    float knee = 180 - beta - GAMMA(alpha + theta);
-    knee = U_KNEE(knee);
+    float knee = 2 * alpha - GAMMA(alpha + theta);
 
     return knee < MIN ? MIN : knee > MAX ? MAX : knee;
   }
 
+  int get_servo_angle_forward(float angle)
+  {
+    angle = U_FORWARD(angle);
+    return angle < MIN ? MIN : angle > MAX ? MAX : angle;
+  }
+
+  int get_servo_angle_backward(float angle)
+  {
+    angle = U_BACKWARD(angle);
+    return angle < MIN ? MIN : angle > MAX ? MAX : angle;
+  }
   /*
   *
   * Gait and walking motion calculations are in this section
