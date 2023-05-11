@@ -50,7 +50,6 @@ namespace subtask {
   int get_knee_output(float x, float y)
   {
     float alpha = get_alpha(x, y);
-    float beta = get_beta(alpha);
     float theta = get_theta(x, y);
 
     float knee = 2 * alpha - GAMMA(alpha + theta);
