@@ -1,3 +1,9 @@
+/*
+*
+* Sort out the kinematics
+*
+*/
+
 #pragma once
 
 //-----Internals------
@@ -13,8 +19,8 @@
 #include <Servo.h>
 
 //Include your Actuator libraries here
-#define U_BACKWARD(x) -36/19 * x + 180
-#define U_FORWARD(x) 36/19 * x
+#define MAX 180
+#define MIN 0
 
 namespace actuators{
 
@@ -51,23 +57,43 @@ namespace actuators{
     delay(2500);
   }
 
+  int servo_forward(int value){
+    //return static_cast<int>(36.0/19.0 * value);
+    return value;
+  }
+
+  int servo_backward(int value){
+    //return static_cast<int>(-36.0/19.0 * value + 180);
+    return 180 - value;
+  }
+
   void write_leg_bl(int hip, int knee){
-    int pos[] = {U_BACKWARD(knee), U_FORWARD(hip)};
+    int pos[] = {servo_backward(knee), servo_forward(hip)};
+    PRINT("Positions: ")
+    PRINT(hip)
+    PRINT(", ")
+    PRINT(knee)
+
+    PRINT("Output for pos[0]: ")
+    PRINT(pos[0])
+
+    PRINT("Output for pos[1]: ")
+    PRINT(pos[1])
     leg_bl.write(pos);
   }
 
   void write_leg_br(int hip, int knee){
-    int pos[] = {U_FORWARD(knee), U_BACKWARD(hip)};
+    int pos[] = {servo_forward(knee), servo_backward(hip)};
     leg_br.write(pos);
   }
 
   void write_leg_fr(int hip, int knee){
-    int pos[] = {U_BACKWARD(knee), U_FORWARD(hip)};
+    int pos[] = {servo_backward(knee), servo_forward(hip)};
     leg_fr.write(pos);
   }
 
   void write_leg_fl(int hip, int knee){
-    int pos[] = {U_FORWARD(knee), U_BACKWARD(hip)};
+    int pos[] = {servo_forward(knee), servo_backward(hip)};
     leg_fl.write(pos);
   }
 
