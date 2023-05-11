@@ -38,6 +38,8 @@ namespace subtask {
     return atan(x/y) * 180.0f/PI;
   }
 
+
+  // wrapper function to get the hip_output
   int get_hip_output(float x, float y)
   {
     float alpha = get_alpha(x, y);
@@ -47,6 +49,7 @@ namespace subtask {
     return hip < MIN ? MIN : hip > MAX ? MAX : hip;
   }
 
+  // wrapper function to get the knee_output
   int get_knee_output(float x, float y)
   {
     float alpha = get_alpha(x, y);
