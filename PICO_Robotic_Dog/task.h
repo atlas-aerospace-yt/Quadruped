@@ -10,7 +10,7 @@ namespace task
 {
 
   bool inc = true;
-  int i = 14;
+  int i = 13;
   int min = 12;
   int max = 15;
 
