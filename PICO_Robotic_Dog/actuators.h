@@ -13,6 +13,8 @@
 #include <Servo.h>
 
 //Include your Actuator libraries here
+#define U_BACKWARD(x) -36/19 * x + 180
+#define U_FORWARD(x) 36/19 * x
 
 namespace actuators{
 
@@ -32,8 +34,8 @@ namespace actuators{
   {
     leg_bl.attach(pins_bl);
     leg_br.attach(pins_br);
-    leg_fl.attach(pins_fl);
-    leg_fr.attach(pins_fr);
+    leg_fr.attach(pins_fl);
+    leg_fl.attach(pins_fr);
   }
 
   void test()
@@ -43,9 +45,30 @@ namespace actuators{
 
     leg_bl.write(pos_backward);
     leg_br.write(pos_forward);
-    leg_fl.write(pos_backward);
-    leg_fr.write(pos_forward);
+    leg_fr.write(pos_backward);
+    leg_fl.write(pos_forward);
 
     delay(2500);
   }
+
+  void write_leg_bl(int hip, int knee){
+    int pos[] = {U_BACKWARD(knee), U_FORWARD(hip)};
+    leg_bl.write(pos);
+  }
+
+  void write_leg_br(int hip, int knee){
+    int pos[] = {U_FORWARD(knee), U_BACKWARD(hip)};
+    leg_br.write(pos);
+  }
+
+  void write_leg_fr(int hip, int knee){
+    int pos[] = {U_BACKWARD(knee), U_FORWARD(hip)};
+    leg_fr.write(pos);
+  }
+
+  void write_leg_fl(int hip, int knee){
+    int pos[] = {U_FORWARD(knee), U_BACKWARD(hip)};
+    leg_fl.write(pos);
+  }
+
 }  // namespace actuators
