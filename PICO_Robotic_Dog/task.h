@@ -9,6 +9,11 @@
 namespace task
 {
 
+  bool inc = true;
+  int i = 14;
+  int min = 12;
+  int max = 15;
+
   void Setup()
   {
     actuators::init();
@@ -29,11 +34,25 @@ namespace task
     // A walking demo without any forms of control.
     //
 
-    //PRINT("Walking...")
-    //subtask::update_gait();
-    //subtask::get_positions();
-    //actuators::write(subtask::positions);
+    if (i >= max || i <= min){
+      inc = !inc;
+    }
 
-    delay(150);
+    if (inc){
+      i ++;
+    }
+    else {
+      i --;
+    }
+
+    int hip = subtask::get_hip_output(0, i);
+    int knee = subtask::get_knee_output(0, i);
+
+    actuators::write_leg_bl(hip, knee);
+    actuators::write_leg_br(hip, knee);
+    actuators::write_leg_fl(hip, knee);
+    actuators::write_leg_fr(hip, knee);
+
+    delay(250);
   }
 }
