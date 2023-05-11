@@ -27,7 +27,9 @@ def plot_leg(alpha, theta):
 
 if __name__ == "__main__":
 
-    alpha, theta = get_alpha_theta(-3, 10)
+    alpha, theta = get_alpha_theta(5, 12)
+
+    print(f"Angles -> {alpha * 180/math.pi}, {theta * 180/math.pi}")
 
     leg = plot_leg(alpha, theta)
 
