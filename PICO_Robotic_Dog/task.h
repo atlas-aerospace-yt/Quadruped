@@ -8,11 +8,10 @@
 
 namespace task
 {
-
-  bool inc = true;
-  int i = 13;
-  int min = 12;
-  int max = 15;
+  subtask::Gait leg_br(0);
+  subtask::Gait leg_fl(1);
+  subtask::Gait leg_bl(2);
+  subtask::Gait leg_fr(3);
 
   void Setup()
   {
@@ -33,25 +32,15 @@ namespace task
     //
     // A walking demo without any forms of control.
     //
+    leg_br.update_forward();
+    leg_bl.update_forward();
+    leg_fr.update_forward();
+    leg_fl.update_forward();
 
-    if (i >= max || i <= min){
-      inc = !inc;
-    }
-
-    if (inc){
-      i ++;
-    }
-    else {
-      i --;
-    }
-
-    int hip = subtask::get_hip_output(0, i);
-    int knee = subtask::get_knee_output(0, i);
-
-    actuators::write_leg_bl(hip, knee);
-    actuators::write_leg_br(hip, knee);
-    actuators::write_leg_fl(hip, knee);
-    actuators::write_leg_fr(hip, knee);
+    actuators::write_leg_bl(leg_bl.get_x(), leg_bl.get_y());
+    actuators::write_leg_br(leg_br.get_x(), leg_br.get_y());
+    actuators::write_leg_fl(leg_fl.get_x(), leg_fl.get_y());
+    actuators::write_leg_fr(leg_fr.get_x(), leg_fr.get_y());
 
     delay(250);
   }
