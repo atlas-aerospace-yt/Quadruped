@@ -4,8 +4,6 @@
 
 #define LENGTH 7.5f
 
-#define GAMMA(x) 12/19 * x
-
 namespace subtask {
 
   /*
@@ -19,7 +17,6 @@ namespace subtask {
   float get_alpha(float x, float y)
   {
     float length_new = 0.5f * sqrt(sq(x) + sq(y));
-
     return acos(length_new/LENGTH) * 180.0f/PI;
   }
 
@@ -33,23 +30,30 @@ namespace subtask {
     return atan(x/y) * 180.0f/PI;
   }
 
-  int get_hip_output(float x, float y)
+  float get_gamma(float value)
   {
-    float alpha = get_alpha(x, y);
-    float theta = get_theta(x, y);
-    float hip = alpha + theta;
-
-    return hip;
+    return -6.0f/10.0f * value + 180;
   }
 
-  int get_knee_output(float x, float y)
+  int* get_positions(float x, float y)
   {
+    static int positions[2];
+
     float alpha = get_alpha(x, y);
+    float beta = get_beta(alpha);
     float theta = get_theta(x, y);
 
-    float knee = 2 * alpha - GAMMA(alpha + theta);
+    positions[0] = static_cast<int>(get_gamma(alpha + theta) - beta);
+    positions[1] = static_cast<int>(alpha + theta);
 
-    return knee;
+    /*PRINT(" Alpha: ");
+    PRINT(alpha);
+    PRINT(" Beta: ");
+    PRINT(get_beta(alpha));
+    PRINT(" Theta: ");
+    PRINT(theta);*/
+
+    return positions;
   }
 
   /*
@@ -59,45 +63,42 @@ namespace subtask {
   *
   */
 
-  // front legs are mirrored
-  int front_gait[][2] = {{0, 14}, {-2, 14}, {-5, 14}, {-2, 8}};
-  // back legs are not mirrored
-  int back_gait[][2] = {{-5, 14}, {-2, 14}, {0, 14}, {-2, 8}};
-  // the current gait position of each leg {FL, FR, BL, BR}
-  int stats[] = {0, 2, 1, 3};
-  int positions[8];
-
-  void update_gait()
+  class Gait
   {
-    for (int i=0; i<4; i++)
-    {
-      stats[i] ++;
-      if (stats[i] > 3)
-      {
-        stats[i] = 0;
-      }
-    }
-  }
+    int x[4] = {0, 2, 0 , -2};
+    int y[4] = {14, 14, 10, 10};
+    int indx = 0;
 
-  void get_positions()
-  {
-    for (int i=0; i<4; i++)
-    {
-      int stat = stats[i];
+    public:
 
-      int hip_indx = 2 * i;
-      int knee_indx = 2 * i + 1;
+      Gait(int indx){
+        this->indx = indx;
+      }
 
-      if (i < 2)
-      {
-        positions[hip_indx] = get_hip_output(front_gait[stat][0], front_gait[stat][1]);
-        positions[knee_indx] = get_knee_output(front_gait[stat][0], front_gait[stat][1]);
+      void update_forward(){
+        indx ++;
+        if (indx > 3){
+          indx = 0;
+        }
       }
-      else
-      {
-        positions[hip_indx] = get_hip_output(back_gait[stat][0], back_gait[stat][1]);
-        positions[knee_indx] = get_knee_output(back_gait[stat][0], back_gait[stat][1]);
+
+      void update_backward(){
+        indx --;
+        if (indx < 0){
+          indx = 3;
+        }
       }
-    }
-  }
+
+      int get_x(){
+        return x[indx];
+      }
+
+      int get_y(){
+        return y[indx];
+      }
+
+      int get_indx(){
+        return indx;
+      }
+  };
 }
