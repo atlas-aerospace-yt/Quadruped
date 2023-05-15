@@ -37,6 +37,7 @@ namespace actuators{
   ActuatorGroup<Servo,2> leg_fl;
   ActuatorGroup<Servo,2> leg_fr;
 
+  Lerp<2> lerp_bl(0, 180, 100);
   //Lerp(0, 180);
 
   void init()
@@ -61,11 +62,13 @@ namespace actuators{
   }
 
   int servo_forward(int value){
-    return static_cast<int>(36.0/19.0 * value);
+    int output = static_cast<int>(36.0/19.0 * value);
+    return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
   int servo_backward(int value){
-    return static_cast<int>(-36.0/19.0 * value + 180);
+    int output = static_cast<int>(-36.0/19.0 * value + 180);
+    return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
   void write_leg_bl(float x, float y){
