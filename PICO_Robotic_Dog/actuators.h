@@ -1,7 +1,9 @@
 /*
 *
-* Sort out the kinematics
+* TODO -> Sort out the kinematics
 *
+* for hip -> y=-5/3x+180
+* for knee -> ???
 */
 
 #pragma once
@@ -67,7 +69,7 @@ namespace actuators{
   }
 
   int servo_backward(int value){
-    int output = static_cast<int>(-36.0/19.0 * value + 180);
+    int output = static_cast<int>(-5.0f/3.0f * value + 180);
     return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
