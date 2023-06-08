@@ -32,7 +32,7 @@ namespace subtask {
 
   float get_gamma(float value)
   {
-    return -6.0f/10.0f * value + 180;
+    return -7.0f/10.0f * value + 180;
   }
 
   int* get_positions(float x, float y)
@@ -65,19 +65,21 @@ namespace subtask {
 
   class Gait
   {
-    int res = 0;
-    int indx = 0;
+    int res_one;
+    int res_two;
+    int indx;
 
-    float min_x = 0;
-    float min_h = 0;
-    float max_x = 0;
-    float max_h = 0;
+    float min_x;
+    float min_h;
+    float max_x;
+    float max_h;
 
     public:
 
       Gait(int indx, int min_x, int max_x, int max_h, int min_h, int res)
       {
-        this->res = res-2;
+        this->res_one = res * 3/4;
+        this->res_two = res * 1/4;
         this->indx = indx;
         this->min_x = min_x;
         this->max_x = max_x;
@@ -87,36 +89,31 @@ namespace subtask {
 
       void update_forward()
       {
-        indx ++;
-        if (indx > res + 1)
+        if (indx < (res_two + res_one))
         {
-          delay(100);
-          indx = 0;
+          indx ++;
         }
-      }
-
-      void update_backward()
-      {
-        indx --;
-        if (indx < 0)
+        else
         {
-          indx = res;
+          indx = 0;
         }
       }
 
       float get_x()
       {
-        if (indx > res)
+        if (indx < res_one)
         {
-          return 0;
+          return min_x + (max_x - min_x) / res_one * indx;
         }
-
-        return min_x + (max_x - min_x) / res * indx;
+        else
+        {
+          return max_x + (min_x - max_x) / res_two * (indx-res_one);
+        }
       }
 
       float get_y()
       {
-        if (indx > res)
+        if (indx > res_one)
         {
           return min_h;
         }

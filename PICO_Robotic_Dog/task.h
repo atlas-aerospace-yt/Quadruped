@@ -51,6 +51,6 @@ namespace task
     actuators::write_leg_br(leg_br.get_x(), leg_br.get_y());
     actuators::write_leg_fl(leg_fl.get_x(), leg_fl.get_y());
     actuators::write_leg_fr(leg_fr.get_x(), leg_fr.get_y());
-    delay(50);
+    delay(10);
   }
 }
