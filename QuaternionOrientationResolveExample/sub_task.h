@@ -9,14 +9,14 @@ task.h file cleaner
 */
 namespace subtask {
 
-	OriQuat = Quat {1.0f, 0.0f, 0.0f, 0.0f};
+	Quat OriQuat = {1.0f, 0.0f, 0.0f, 0.0f};
 
 	void exampleLongFunc() {}
 
 	Vec ResOriFromAcc(Vec Acc){
-		Vec GlobAcc = Vec(0.0f , 0.0f, Acc.magnitude());
-		dot = Acc.dot(GlobAcc);
-		cross = Acc * GlobAcc;
+		Vec GlobAcc = {0.0f , 0.0f, Acc.magnitude()};
+		float dot = Acc.dot(GlobAcc);
+		Vec cross = Acc * GlobAcc;
 
 		q = Quat(dot + sqrt(dot * dot + cross.dot(cross)), cross.x, cross.y, cross.z);
 		q.normalise();

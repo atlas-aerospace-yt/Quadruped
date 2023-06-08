@@ -24,6 +24,7 @@ namespace task
     void Setup()
     {
         subtask::exampleLongFunc(); // you can delete this purely for demonstration
+	sensors::init();    
     }
 
     // Can be used to automatically test actuators
