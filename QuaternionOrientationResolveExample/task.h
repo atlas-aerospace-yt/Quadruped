@@ -8,6 +8,7 @@
 #include "sidekick.h"
 //-----Internals------
 
+#incluce "timer_handler.h"
 // Tasks go here-- this keeps the main file clean and focused on the "flow" of tasks
 // Our general functions will be defined here things like our main loops
 // Long sections of code or repeated code loops can be moved to sub_task.h
@@ -23,8 +24,7 @@ namespace task
     // This can also be run multiple times by changing the code flow in main.h
     void Setup()
     {
-        subtask::exampleLongFunc(); // you can delete this purely for demonstration
-	sensors::init();    
+        sensors::init();
     }
 
     // Can be used to automatically test actuators
@@ -41,6 +41,23 @@ namespace task
     // Code that loops
     void Loop()
     {
+      sensors::update();
+
+      //Vec acc_ori = subtask::ResOriFromAcc(sensors::accel);
+      //Vec gyro_ori = subtask::ResOriFromGyro(sensors::rate);
+
+      PRINT(" Accel: ");
+      PRINT(String(sensors::accel));
+      PRINT(" Rate: ");
+      PRINT(String(sensors::rate));
+
+      /*GRAPH("X", gyro_ori.x, TOP);
+      GRAPH("Y", gyro_ori.y, TOP);
+      GRAPH("Z", gyro_ori.z, TOP);
+
+      GRAPH("X", acc_ori.x, BOT);
+      GRAPH("Y", acc_ori.y, BOT);
+      GRAPH("Z", acc_ori.z, BOT);*/
     }
 
 } // namespace task

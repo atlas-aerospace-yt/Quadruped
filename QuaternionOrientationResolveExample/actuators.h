@@ -9,7 +9,6 @@
 //-----Internals------
 
 // Include your Actuator libraries here
-#include <Servo.h>
 
 //Include your Actuator libraries here
 
