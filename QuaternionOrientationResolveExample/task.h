@@ -8,7 +8,6 @@
 #include "sidekick.h"
 //-----Internals------
 
-#incluce "timer_handler.h"
 // Tasks go here-- this keeps the main file clean and focused on the "flow" of tasks
 // Our general functions will be defined here things like our main loops
 // Long sections of code or repeated code loops can be moved to sub_task.h

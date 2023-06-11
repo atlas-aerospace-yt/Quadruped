@@ -12,6 +12,8 @@ task.h file cleaner
 namespace subtask {
 
 	Quat OriQuat = {1.0f, 0.0f, 0.0f, 0.0f};
+	Vec OriAcc;
+	Vec OriGyro;
 
 	void exampleLongFunc() {}
 
@@ -23,9 +25,8 @@ namespace subtask {
 		Quat q = Quat(dot + sqrt(dot * dot + cross.dot(cross)), cross.x, cross.y, cross.z);
 		q.normalize();
 
-		float* ypr[3] = {OriQuat.toEuler()};
-		Vec ori = {*(ypr[0]), *(ypr[1]), *(ypr[2])};
-		return ori;
+		OriQuat.toEulerVector(&OriAcc);
+		return OriAcc;
 	}
 
 	Vec ResOriFromGyro(Vec Rate){

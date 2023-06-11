@@ -37,20 +37,20 @@ namespace task
     // A walking demo without any forms of control.
     //
 
-    x = sk_math::SMOOTHLERP(leg_bl.get_prev_x(), leg_bl.get_x(), interp);
-    y = sk_math::SMOOTHLERP(leg_bl.get_prev_y(), leg_bl.get_y(), interp);
+    x = sk_math::LERP(leg_bl.get_prev_x(), leg_bl.get_x(), interp);
+    y = sk_math::LERP(leg_bl.get_prev_y(), leg_bl.get_y(), interp);
     actuators::write_leg_bl(x, y);
 
-    x = sk_math::SMOOTHLERP(leg_br.get_prev_x(), leg_br.get_x(), interp);
-    y = sk_math::SMOOTHLERP(leg_br.get_prev_y(), leg_br.get_y(), interp);
+    x = sk_math::LERP(leg_br.get_prev_x(), leg_br.get_x(), interp);
+    y = sk_math::LERP(leg_br.get_prev_y(), leg_br.get_y(), interp);
     actuators::write_leg_br(x, y);
 
-    x = sk_math::SMOOTHLERP(leg_fl.get_prev_x(), leg_fl.get_x(), interp);
-    y = sk_math::SMOOTHLERP(leg_fl.get_prev_y(), leg_fl.get_y(), interp);
+    x = sk_math::LERP(leg_fl.get_prev_x(), leg_fl.get_x(), interp);
+    y = sk_math::LERP(leg_fl.get_prev_y(), leg_fl.get_y(), interp);
     actuators::write_leg_fl(x, y);
 
-    x = sk_math::SMOOTHLERP(leg_fr.get_prev_x(), leg_fr.get_x(), interp);
-    y = sk_math::SMOOTHLERP(leg_fr.get_prev_y(), leg_fr.get_y(), interp);
+    x = sk_math::LERP(leg_fr.get_prev_x(), leg_fr.get_x(), interp);
+    y = sk_math::LERP(leg_fr.get_prev_y(), leg_fr.get_y(), interp);
     actuators::write_leg_fr(x, y);
 
     PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
