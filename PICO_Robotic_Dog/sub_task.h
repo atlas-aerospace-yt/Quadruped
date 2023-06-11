@@ -65,64 +65,49 @@ namespace subtask {
 
   class Gait
   {
-    int res_one;
-    int res_two;
-    int indx;
-
-    float min_x;
-    float min_h;
-    float max_x;
-    float max_h;
+    float x[4] = {-3, 0, 3, 0};
+    float y[4] = {14.5, 14.5, 14.5, 12};
 
     public:
 
-      Gait(int indx, int min_x, int max_x, int max_h, int min_h, int res)
+      int indx;
+
+      Gait(int indx)
       {
-        this->res_one = res * 3/4;
-        this->res_two = res * 1/4;
         this->indx = indx;
-        this->min_x = min_x;
-        this->max_x = max_x;
-        this->min_h = min_h;
-        this->max_h = max_h;
       }
 
       void update_forward()
       {
-        if (indx < (res_two + res_one))
-        {
+        if (indx < 3) {
           indx ++;
-        }
-        else
-        {
+        } else {
           indx = 0;
         }
       }
 
-      float get_x()
-      {
-        if (indx < res_one)
-        {
-          return min_x + (max_x - min_x) / res_one * indx;
-        }
-        else
-        {
-          return max_x + (min_x - max_x) / res_two * (indx-res_one);
+      float get_x(){
+        return x[indx];
+      }
+
+      float get_prev_x(){
+        if (indx > 0){
+          return x[indx-1];
+        } else {
+          return x[3];
         }
       }
 
-      float get_y()
-      {
-        if (indx > res_one)
-        {
-          return min_h;
-        }
-        return max_h;
+      float get_y(){
+        return y[indx];
       }
 
-      int get_indx()
-      {
-        return indx;
+      float get_prev_y(){
+        if (indx > 0){
+          return y[indx-1];
+        } else {
+          return y[3];
+        }
       }
   };
 }
