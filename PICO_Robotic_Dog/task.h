@@ -5,16 +5,17 @@
 #include "sub_task.h"
 #include "utility.h"
 #include "sidekick.h"
-
-#define INTERP 64
-#define GAIT -3, 3, 14, 10, INTERP
-
+#include "sk_math.h"
 namespace task
 {
-  subtask::Gait leg_bl(0, GAIT);
-  subtask::Gait leg_fr(INTERP * 1 / 4, GAIT);
-  subtask::Gait leg_br(INTERP * 2 / 4, GAIT);
-  subtask::Gait leg_fl(INTERP * 3 / 4, GAIT);
+  float interp = 0;
+
+  float x, y;
+
+  subtask::Gait leg_bl(0);
+  subtask::Gait leg_fr(1);
+  subtask::Gait leg_br(2);
+  subtask::Gait leg_fl(3);
 
   void Setup()
   {
@@ -35,22 +36,37 @@ namespace task
     //
     // A walking demo without any forms of control.
     //
-    leg_br.update_forward();
-    leg_bl.update_forward();
-    leg_fr.update_forward();
-    leg_fl.update_forward();
 
-    PRINT(" INDEX: ");
-    PRINT(leg_bl.get_indx());
-    PRINT(" X: ");
-    PRINT(leg_bl.get_x());
-    PRINT(" Y: ");
-    PRINT(leg_bl.get_y());
+    x = sk_math::SMOOTHLERP(leg_bl.get_prev_x(), leg_bl.get_x(), interp);
+    y = sk_math::SMOOTHLERP(leg_bl.get_prev_y(), leg_bl.get_y(), interp);
+    actuators::write_leg_bl(x, y);
 
-    actuators::write_leg_bl(leg_bl.get_x(), leg_bl.get_y());
-    actuators::write_leg_br(leg_br.get_x(), leg_br.get_y());
-    actuators::write_leg_fl(leg_fl.get_x(), leg_fl.get_y());
-    actuators::write_leg_fr(leg_fr.get_x(), leg_fr.get_y());
+    x = sk_math::SMOOTHLERP(leg_br.get_prev_x(), leg_br.get_x(), interp);
+    y = sk_math::SMOOTHLERP(leg_br.get_prev_y(), leg_br.get_y(), interp);
+    actuators::write_leg_br(x, y);
+
+    x = sk_math::SMOOTHLERP(leg_fl.get_prev_x(), leg_fl.get_x(), interp);
+    y = sk_math::SMOOTHLERP(leg_fl.get_prev_y(), leg_fl.get_y(), interp);
+    actuators::write_leg_fl(x, y);
+
+    x = sk_math::SMOOTHLERP(leg_fr.get_prev_x(), leg_fr.get_x(), interp);
+    y = sk_math::SMOOTHLERP(leg_fr.get_prev_y(), leg_fr.get_y(), interp);
+    actuators::write_leg_fr(x, y);
+
+    PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
+    PRINT("X: " + String(leg_fr.get_prev_x()) + " , " + leg_fr.get_x())
+    PRINT("Y: " + String(leg_fr.get_prev_y()) + " , " + leg_fr.get_y())
+    PRINT("INDX: " + String(leg_fr.indx))
     delay(10);
+
+    if (interp < 1){
+      interp += 0.02;
+    } else {
+      interp = 0;
+      leg_br.update_forward();
+      leg_bl.update_forward();
+      leg_fr.update_forward();
+      leg_fl.update_forward();
+    }
   }
 }
