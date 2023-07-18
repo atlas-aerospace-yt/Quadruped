@@ -56,10 +56,10 @@ namespace task
     y = sk_math::LERP(leg_fr.get_prev_y(), leg_fr.get_y(), interp);
     actuators::write_leg_fr(x, y);
 
-    PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
-    PRINT("X: " + String(leg_fr.get_prev_x()) + " , " + leg_fr.get_x())
-    PRINT("Y: " + String(leg_fr.get_prev_y()) + " , " + leg_fr.get_y())
-    PRINT("INDX: " + String(leg_fr.indx))
+    //PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
+    //PRINT("X: " + String(leg_fr.get_prev_x()) + " , " + leg_fr.get_x())
+    //PRINT("Y: " + String(leg_fr.get_prev_y()) + " , " + leg_fr.get_y())
+    //PRINT("INDX: " + String(leg_fr.indx))
 
     GRAPH("LERP", x, TOP);
     GRAPH("LERP", y, BOT);
@@ -71,7 +71,7 @@ namespace task
     delay(10);
 
     if (interp < 1){
-      interp += 1 / INTERP_PTS;
+      interp += 1 / 20.0f;
     } else {
       interp = 0;
       leg_br.update_forward();

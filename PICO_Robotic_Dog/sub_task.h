@@ -65,8 +65,8 @@ namespace subtask {
 
   class Gait
   {
-    float x[] = {-3, -2, -1, 0, 1, 2, 3, 0};
-    float y[] = {14.5, 14.5, 14.5, 14.5, 14.5, 14.5, 14.5, 12};
+    float x[8] = {-3, -2, -1, 0, 1, 2, 3, 0};
+    float y[8] = {14.5, 14.5, 14.5, 14.5, 14.5, 14.5, 14.5, 12};
 
     public:
 
@@ -79,7 +79,7 @@ namespace subtask {
 
       void update_forward()
       {
-        if (indx < 3) {
+        if (indx < 7) {
           indx ++;
         } else {
           indx = 0;
@@ -94,7 +94,7 @@ namespace subtask {
         if (indx > 0){
           return x[indx-1];
         } else {
-          return x[3];
+          return x[7];
         }
       }
 
@@ -106,7 +106,7 @@ namespace subtask {
         if (indx > 0){
           return y[indx-1];
         } else {
-          return y[3];
+          return y[7];
         }
       }
   };
