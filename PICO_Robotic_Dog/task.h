@@ -7,7 +7,7 @@
 #include "sidekick.h"
 #include "sk_math.h"
 
-#define INTERP_PTS 20
+#define INTERP_PTS 10.0f
 
 namespace task
 {
@@ -56,22 +56,22 @@ namespace task
     y = sk_math::LERP(leg_fr.get_prev_y(), leg_fr.get_y(), interp);
     actuators::write_leg_fr(x, y);
 
-    //PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
+    PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
     //PRINT("X: " + String(leg_fr.get_prev_x()) + " , " + leg_fr.get_x())
     //PRINT("Y: " + String(leg_fr.get_prev_y()) + " , " + leg_fr.get_y())
-    //PRINT("INDX: " + String(leg_fr.indx))
+    PRINT("INDX: " + String(leg_fr.indx))
 
-    GRAPH("LERP", x, TOP);
-    GRAPH("LERP", y, BOT);
+    GRAPH("LERP_X", x, TOP);
+    GRAPH("LERP_Y", y, BOT);
 
-    GRAPH("Front Right", leg_fr.get_x(), TOP);
-    GRAPH("Front Right", leg_fr.get_y(), BOT);
+    //GRAPH("Front Right", leg_fr.get_x(), TOP);
+    //GRAPH("Front Right", leg_fr.get_y(), BOT);
 
 
     delay(10);
 
     if (interp < 1){
-      interp += 1 / 20.0f;
+      interp += 1 / INTERP_PTS;
     } else {
       interp = 0;
       leg_br.update_forward();
