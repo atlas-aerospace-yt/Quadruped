@@ -1,11 +1,3 @@
-/*
-*
-* TODO -> Sort out the kinematics
-*
-* for hip -> y=-5/3x+180
-* for knee -> ???
-*/
-
 #pragma once
 
 //-----Internals------
@@ -17,13 +9,14 @@
 //-----Internals------
 
 // Include your Actuator libraries here
-#include "lerp.h"
 #include <Servo.h>
 
 //Include your Actuator libraries here
-#define MAX 180
+#define FWD_RATIO 36.0f / 19.0f
+#define BWD_RATIO -5.0f / 3.0f
+
 #define MIN 0
-#define LERP_PTS 100
+#define MAX 180
 
 namespace actuators{
 
@@ -39,8 +32,6 @@ namespace actuators{
   ActuatorGroup<Servo,2> leg_fl;
   ActuatorGroup<Servo,2> leg_fr;
 
-  Lerp<2> lerp_bl(0, 180, 100);
-  //Lerp(0, 180);
 
   void init()
   {
@@ -52,8 +43,8 @@ namespace actuators{
 
   void test()
   {
-    int pos_forward[] = {0, 180};
-    int pos_backward[] = {180, 0};
+    int pos_forward[] = {MIN, MAX};
+    int pos_backward[] = {MAX, MIN};
 
     leg_bl.write(pos_forward);
     leg_br.write(pos_backward);
@@ -64,12 +55,12 @@ namespace actuators{
   }
 
   int servo_forward(int value){
-    int output = static_cast<int>(36.0/19.0 * value);
+    int output = static_cast<int>(FWD_RATIO * value);
     return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
   int servo_backward(int value){
-    int output = static_cast<int>(-5.0f/3.0f * value + 180);
+    int output = static_cast<int>(BWD_RATIO * value + MAX);
     return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
