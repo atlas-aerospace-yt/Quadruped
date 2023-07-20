@@ -6,6 +6,9 @@
 #include "utility.h"
 #include "sidekick.h"
 #include "sk_math.h"
+
+#define INTERP_PTS 10.0f
+
 namespace task
 {
   float interp = 0;
@@ -13,9 +16,9 @@ namespace task
   float x, y;
 
   subtask::Gait leg_bl(0);
-  subtask::Gait leg_fr(1);
-  subtask::Gait leg_br(2);
-  subtask::Gait leg_fl(3);
+  subtask::Gait leg_fr(2);
+  subtask::Gait leg_br(4);
+  subtask::Gait leg_fl(6);
 
   void Setup()
   {
@@ -54,13 +57,21 @@ namespace task
     actuators::write_leg_fr(x, y);
 
     PRINT("Interp: " + String(interp) + " Pos: " + String(x) + " , " + String(y))
-    PRINT("X: " + String(leg_fr.get_prev_x()) + " , " + leg_fr.get_x())
-    PRINT("Y: " + String(leg_fr.get_prev_y()) + " , " + leg_fr.get_y())
+    //PRINT("X: " + String(leg_fr.get_prev_x()) + " , " + leg_fr.get_x())
+    //PRINT("Y: " + String(leg_fr.get_prev_y()) + " , " + leg_fr.get_y())
     PRINT("INDX: " + String(leg_fr.indx))
+
+    GRAPH("LERP_X", x, TOP);
+    GRAPH("LERP_Y", y, BOT);
+
+    //GRAPH("Front Right", leg_fr.get_x(), TOP);
+    //GRAPH("Front Right", leg_fr.get_y(), BOT);
+
+
     delay(10);
 
     if (interp < 1){
-      interp += 0.02;
+      interp += 1 / INTERP_PTS;
     } else {
       interp = 0;
       leg_br.update_forward();
