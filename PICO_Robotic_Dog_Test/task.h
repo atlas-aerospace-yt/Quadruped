@@ -85,7 +85,7 @@ namespace task
 
     PRINT("Delta time: " + String(dt));
 
-    Vec ori = subtask::gyro_ori.QuatToEuler() * 180.0f / PI;
+    Vec ori = subtask::gyro_ori.quatToVec() * 180.0f / PI;
 
     float y = PIDY.update(ori.y, dt);
     float z = PIDZ.update(ori.z, dt);
@@ -118,6 +118,8 @@ namespace task
     leg_fr.update_forward();
     leg_bl.update_forward();
     leg_br.update_forward();
+
+    delay(50);
   }
 
   void Graph(){

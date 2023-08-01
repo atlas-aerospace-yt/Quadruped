@@ -16,10 +16,10 @@ enum Task
     Setup,
     ActuatorTest,
     Calibration,
-    Loop
+    Walk
 };
 Array<taskFunc, TASK_COUNT> TaskFlow(task::Setup, task::ActuatorTest, task::Calibration,
- task::Loop);
+ task::Walk);
 TransitionMap<TASK_COUNT> transition_map(TaskFlow);
 
 void taskInit()
@@ -33,6 +33,6 @@ void taskSchedule()
     // transition_map.add(starting state, exit condition (evaluatable bool),exit state);
     transition_map.add(Setup, LOOP_ONCE, ActuatorTest);
     transition_map.add(ActuatorTest, LOOP_ONCE, Calibration);
-    transition_map.add(Calibration, LOOP_ONCE, Loop);
+    transition_map.add(Calibration, LOOP_ONCE, Walk);
 
 }
