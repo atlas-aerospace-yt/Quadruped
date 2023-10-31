@@ -19,7 +19,7 @@
 #define MIN 0
 #define MAX 180
 
-#define MIN_HEIGHT 13.0f
+#define MIN_HEIGHT 10.0f
 #define MAX_HEIGHT 15.0f
 
 #define STEPS 1000.0f
