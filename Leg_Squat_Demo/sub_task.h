@@ -33,9 +33,9 @@ namespace subtask {
     return -7.0f/10.0f * value + 180;
   }
 
-  int* get_positions(float x, float y)
+  float* get_positions(float x, float y)
   {
-    static int positions[2];
+    static float positions[2];
 
     float alpha = get_alpha(x, y);
     float beta = get_beta(alpha);
