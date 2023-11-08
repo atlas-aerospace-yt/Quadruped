@@ -1,8 +1,16 @@
 #pragma once
 
 #include "utility.h"
+#include "sidekick.h"
+
+#include "quaternion.h"
+#include "vector.h"
+
+#include "control.h"
 
 #define LENGTH 7.5f
+#define BODY_LENGTH 30.0f
+#define BODY_WIDTH 15.0f
 
 namespace subtask {
   /*
@@ -47,4 +55,36 @@ namespace subtask {
     return positions;
   }
 
+  /*
+  * General functions
+  */
+
+  Quat ori_quat = {1.0f, 0.0f, 0.0f, 0.0f};
+
+  PID<float> y_axis(0.3f, 0.015f, 0.075f);
+  PID<float> x_axis(0.3f, 0.015f, 0.075f);
+
+  float get_dt(){
+    sk_timer.stop();
+    float dt = sk_timer.deltaT();
+    sk_timer.start();
+    return dt;
+  }
+
+  void update_ori(Vec gyro, float dt)
+  {
+    Quat gyro_rate = {0.0f, gyro.x, gyro.y, gyro.z};
+    ori_quat += ori_quat * 0.5f * gyro_rate * dt;
+    ori_quat.normalize();
+  }
+
+  float* control_loop(Vec ori, float dt)
+  {
+    // Add to front
+    static float output[2];
+    output[0] = BODY_LENGTH / 2 * sin(y_axis.update(ori.y, dt));
+    output[1] = BODY_WIDTH / 2 * sin(x_axis.update(ori.z, dt));
+
+    return output;
+  }
 }  // namespace subtask

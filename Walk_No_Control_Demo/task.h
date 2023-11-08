@@ -29,9 +29,9 @@ namespace task
     float positions[8];
 
     gait::Gait leg_bl(0, GAIT);
-    gait::Gait leg_fr(0, GAIT);
+    gait::Gait leg_fr(1, GAIT);
     gait::Gait leg_br(2, GAIT);
-    gait::Gait leg_fl(2, GAIT);
+    gait::Gait leg_fl(3, GAIT);
 
     void Setup()
     {
@@ -86,7 +86,7 @@ namespace task
       END_LOG;
 
       actuators::write(positions);
-      delay(8);
+      delay(50);
     }
 
 } // namespace task
