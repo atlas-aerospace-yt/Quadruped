@@ -57,12 +57,15 @@ namespace actuators{
     return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
-  void write(float* positions, Vec ori, float dt){
-    float* output = subtask::control_loop(ori, dt);
-    positions[1] = positions[1] - output[1] + output[0];
-    positions[3] = positions[3]+ output[1] + output[0];
-    positions[5] = positions[5]- output[1] - output[0];
-    positions[7] = positions[7]+ output[1] - output[0];
+  void write(float* positions, Vec ori={0,0,0}, float dt=0, bool control=false){
+
+    if (control) {
+      float* output = subtask::control_loop(ori, dt);
+      positions[1] = positions[1] - output[1] + output[0];
+      positions[3] = positions[3] + output[1] + output[0];
+      positions[5] = positions[5] - output[1] - output[0];
+      positions[7] = positions[7] + output[1] - output[0];
+    }
 
     // Write the values to the servos
     float* pos = subtask::get_positions(positions[0], positions[1]);

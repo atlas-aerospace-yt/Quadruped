@@ -32,11 +32,26 @@ namespace task
     // Very useful for quick plug and play testing
     void ActuatorTest()
     {
+      PRINTLN("Calibrating...");
+      float positions[8] = {0.0f, 15.0f,
+                            0.0f, 15.0f,
+                            0.0f, 15.0f,
+                            0.0f, 15.0f};
+      actuators::write(positions);
+      delay(2500);
     }
 
     // Can be used to print sensor values and any other required calibration
     void Calibration()
     {
+      PRINTLN("Calibrating...");
+      delay(2500);
+      sk_timer.start();
+      while (sk_timer.getTime() < 10.0f){
+        sensors::calibrate();
+      }
+      sensors::end_calibration();
+
       sk_timer.start();
       sk_timer.stop();
     }
@@ -53,7 +68,7 @@ namespace task
                             0.0f, 12.0f,
                             0.0f, 12.0f};
 
-      actuators::write(positions, ori, dt);
+      actuators::write(positions, ori, dt, true);
 
       GRAPH("x", ori.x * 180.0f / PI, TOP);
       GRAPH("y", ori.y * 180.0f / PI, TOP);

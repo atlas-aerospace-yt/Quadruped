@@ -61,8 +61,8 @@ namespace subtask {
 
   Quat ori_quat = {1.0f, 0.0f, 0.0f, 0.0f};
 
-  PID<float> y_axis(0.3f, 0.015f, 0.075f);
-  PID<float> x_axis(0.3f, 0.015f, 0.075f);
+  PID<float> y_axis(1.2f, 0.025f, 0.05f);
+  PID<float> x_axis(1.2f, 0.025f, 0.05f);
 
   float get_dt(){
     sk_timer.stop();

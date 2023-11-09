@@ -9,17 +9,13 @@
 #include "BMI088.h"
 #include "Wire.h"
 
-#define X_OFFSET 0.34f
-#define Y_OFFSET -0.06f
-#define Z_OFFSET 0.21f
-
 namespace sensors {
 
   BMI088 bmi088(0x18, 0x68);
 
-  float x=0;
-  float y=0;
-  float z=0;
+  float x_offset=0;
+  float y_offset=0;
+  float z_offset=0;
 
   unsigned long i = 0;
 
@@ -42,21 +38,28 @@ namespace sensors {
 
     bmi088.getGyroscope(&gx, &gy, &gz);
 
-    gx += X_OFFSET;
-    gy += Y_OFFSET;
-    gz += Z_OFFSET;
+    gx += x_offset;
+    gy += y_offset;
+    gz += z_offset;
 
     Vec gyro = {gx * PI / 180.0f, gy * PI / 180.0f, gz * PI / 180.0f};
     subtask::update_ori(gyro, dt);
+  }
 
-    x += gx;
-    y += gy;
-    z += gz;
+  void calibrate() {
+    float gx, gy, gz;
+    bmi088.getGyroscope(&gx, &gy, &gz);
+
+    x_offset -= gx;
+    y_offset -= gy;
+    z_offset -= gz;
     i ++;
+  }
 
-    //GRAPH("x_dot", gx, BOT);
-    //GRAPH("y_dot", gy, BOT);
-    //GRAPH("z_dot", gz, BOT);
+  void end_calibration() {
+    x_offset = float(x_offset/i);
+    y_offset = float(y_offset/i);
+    z_offset = float(z_offset/i);
   }
 
 }  // namespace sensors
