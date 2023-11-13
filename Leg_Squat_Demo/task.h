@@ -11,8 +11,8 @@
 // Tasks go here-- this keeps the main file clean and focused on the "flow" of tasks
 // Our general functions will be defined here things like our main loops
 // Long sections of code or repeated code loops can be moved to sub_task.h
-#define MIN_HEIGHT -4.0f
-#define MAX_HEIGHT 4.0f
+#define MIN_HEIGHT 10.0f
+#define MAX_HEIGHT 15.0f
 
 #define STEPS 1000.0f
 
@@ -71,8 +71,8 @@ namespace task
       }
 
       // Compute the positions array
-      float x = sk_math::SMOOTHLERP(MIN_HEIGHT, MAX_HEIGHT, i/STEPS);
-      float y = 13.0f;
+      float x = 0.0f;
+      float y = sk_math::SMOOTHLERP(MIN_HEIGHT, MAX_HEIGHT, i/STEPS);
 
       for (int i=0; i<8; i++){
         if (i % 2 == 0){
