@@ -21,6 +21,8 @@
 #define MIN 0
 #define MAX 180
 
+#define NORM_HEIGHT 13.0f
+
 namespace actuators{
 
   // Globals can be defined here
@@ -63,10 +65,18 @@ namespace actuators{
       float* output = subtask::control_loop(ori, dt);
       GRAPH("u_x", output[0], BOT);
       GRAPH("u_z", output[1], BOT);
-      positions[1] = positions[1] - output[1] + output[0];
-      positions[3] = positions[3] + output[1] + output[0];
-      positions[5] = positions[5] - output[1] - output[0];
-      positions[7] = positions[7] + output[1] - output[0];
+      if (positions[1] < NORM_HEIGHT - output[1] + output[0] || positions[1] == NORM_HEIGHT){
+        positions[1] = positions[1] - output[1] + output[0];
+      }
+      if (positions[3] < NORM_HEIGHT + output[1] + output[0] || positions[3] == NORM_HEIGHT){
+        positions[3] = positions[3] + output[1] + output[0];
+      }
+      if (positions[5] < NORM_HEIGHT - output[1] - output[0] || positions[5] == NORM_HEIGHT){
+        positions[5] = positions[5] - output[1] - output[0];
+      }
+      if (positions[7] < NORM_HEIGHT + output[1] - output[0] || positions[7] == NORM_HEIGHT){
+        positions[7] = positions[7] + output[1] - output[0];
+      }
     }
 
     // Write the values to the servos

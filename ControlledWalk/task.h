@@ -12,8 +12,8 @@
 // Tasks go here-- this keeps the main file clean and focused on the "flow" of tasks
 // Our general functions will be defined here things like our main loops
 // Long sections of code or repeated code loops can be moved to sub_task.h
-
-#define GAIT 100.0f, -5.0f, 5.0f, 6.0f, 13.0f
+#define NORM_HEIGHT 13.0f
+#define GAIT 200.0f, -3.0f, 3.0f, 6.0f, NORM_HEIGHT
 
 // The functions in place here can be changed to suit your needs
 // The ones listed here serve as inspiration--feel free to change them as you need -- but remember to change your Tasks in main.h
@@ -70,10 +70,17 @@ namespace task
       sensors::update(dt);
       Vec ori = subtask::ori_quat.toEuler();
 
-      float positions[8] = {leg_br.x, leg_br.y,
-                            leg_bl.x, leg_bl.y,
-                            -leg_fr.x, leg_fr.y,
-                            -leg_fl.x, leg_fl.y};
+      float positions[8];
+
+      positions[0] = leg_br.x;
+      positions[2] = leg_bl.x;
+      positions[4] = -leg_fr.x;
+      positions[6] = -leg_fl.x;
+
+      positions[1] = leg_br.y;
+      positions[3] = leg_bl.y;
+      positions[5] = leg_fr.y;
+      positions[7] = leg_fl.y;
 
       leg_fl.update_forward();
       leg_fr.update_forward();
@@ -86,7 +93,6 @@ namespace task
       GRAPH("y", ori.y * 180.0f / PI, TOP);
       GRAPH("z", ori.z * 180.0f / PI, TOP);
       PRINTLN("");
-      delay(20);
     }
 
 } // namespace task

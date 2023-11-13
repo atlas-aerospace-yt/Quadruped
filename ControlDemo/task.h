@@ -33,10 +33,10 @@ namespace task
     void ActuatorTest()
     {
       PRINTLN("Calibrating...");
-      float positions[8] = {0.0f, 15.0f,
-                            0.0f, 15.0f,
-                            0.0f, 15.0f,
-                            0.0f, 15.0f};
+      float positions[8] = {0.0f, 12.0f,
+                            0.0f, 12.0f,
+                            0.0f, 12.0f,
+                            0.0f, 12.0f};
       actuators::write(positions);
       delay(2500);
     }

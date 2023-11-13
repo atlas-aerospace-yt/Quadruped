@@ -61,6 +61,8 @@ namespace actuators{
 
     if (control) {
       float* output = subtask::control_loop(ori, dt);
+      GRAPH("u_x", output[0], BOT);
+      GRAPH("u_z", output[1], BOT);
       positions[1] = positions[1] - output[1] + output[0];
       positions[3] = positions[3] + output[1] + output[0];
       positions[5] = positions[5] - output[1] - output[0];

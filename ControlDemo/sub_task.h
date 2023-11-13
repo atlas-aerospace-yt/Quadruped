@@ -12,6 +12,9 @@
 #define BODY_LENGTH 30.0f
 #define BODY_WIDTH 15.0f
 
+#define MAX_CONTROL 2.0f
+#define MIN_CONTROL -2.0f
+
 namespace subtask {
   /*
   *
@@ -61,8 +64,8 @@ namespace subtask {
 
   Quat ori_quat = {1.0f, 0.0f, 0.0f, 0.0f};
 
-  PID<float> y_axis(1.2f, 0.025f, 0.05f);
-  PID<float> x_axis(1.2f, 0.025f, 0.05f);
+  PID<float> y_axis(1.2f, 0.5f, 0.005f);
+  PID<float> x_axis(1.2f, 0.5f, 0.005f);
 
   float get_dt(){
     sk_timer.stop();
@@ -84,7 +87,8 @@ namespace subtask {
     static float output[2];
     output[0] = BODY_LENGTH / 2 * sin(y_axis.update(ori.y, dt));
     output[1] = BODY_WIDTH / 2 * sin(x_axis.update(ori.z, dt));
-
+    output[0] = output[0] < MIN_CONTROL ? MIN_CONTROL : output[0] > MAX_CONTROL ? MAX_CONTROL : output[0];
+    output[1] = output[1] < MIN_CONTROL ? MIN_CONTROL : output[1] > MAX_CONTROL ? MAX_CONTROL : output[1];
     return output;
   }
 }  // namespace subtask
