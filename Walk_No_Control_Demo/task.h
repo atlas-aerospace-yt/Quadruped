@@ -13,7 +13,8 @@
 // Our general functions will be defined here things like our main loops
 // Long sections of code or repeated code loops can be moved to sub_task.h
 
-#define GAIT 100.0f, -5.0f, 5.0f, 6.0f, 13.0f
+#define HEIGHT 13.0f
+#define GAIT 2000.0f, -5.0f, 5.0f, 6.0f, HEIGHT
 
 // The functions in place here can be changed to suit your needs
 // The ones listed here serve as inspiration--feel free to change them as you need -- but remember to change your Tasks in main.h
@@ -24,14 +25,12 @@ namespace task
 
     // Can be used for code that only runs once
     // This can also be run multiple times by changing the code flow in main.h
-    int i = 0;
-    int prev_i = 0;
     float positions[8];
 
-    gait::Gait leg_bl(0, GAIT);
-    gait::Gait leg_fr(1, GAIT);
-    gait::Gait leg_br(2, GAIT);
-    gait::Gait leg_fl(3, GAIT);
+    gait::Gait leg_br(0, GAIT);
+    gait::Gait leg_fl(1, GAIT);
+    gait::Gait leg_bl(3, GAIT);
+    gait::Gait leg_fr(4, GAIT);
 
     void Setup()
     {
@@ -67,12 +66,13 @@ namespace task
     void Loop()
     {
       positions[0] = leg_br.x;
-      positions[1] = leg_br.y;
       positions[2] = leg_bl.x;
-      positions[3] = leg_bl.y;
       positions[4] = -leg_fr.x;
-      positions[5] = leg_fr.y;
       positions[6] = -leg_fl.x;
+
+      positions[1] = leg_br.y;
+      positions[3] = leg_bl.y;
+      positions[5] = leg_fr.y;
       positions[7] = leg_fl.y;
 
       leg_fl.update_forward();
@@ -81,12 +81,20 @@ namespace task
       leg_br.update_forward();
 
       // Graphing outputs
-      GRAPH("Height", positions[1], TOP);
-      GRAPH("Translation", positions[0], TOP);
+      GRAPH("HeightBR", positions[1], TOP);
+      //GRAPH("TranslationBR", positions[0], TOP);
+
+      GRAPH("HeightBL", positions[3], TOP);
+      //GRAPH("TranslationBL", positions[2], TOP);
+
+      GRAPH("HeightFR", positions[5], TOP);
+      //GRAPH("TranslationFR", positions[4], TOP);
+
+      GRAPH("HeightFL", positions[7], TOP);
+      //GRAPH("TranslationFL", positions[6], TOP);
       END_LOG;
 
       actuators::write(positions);
-      delay(50);
     }
 
 } // namespace task

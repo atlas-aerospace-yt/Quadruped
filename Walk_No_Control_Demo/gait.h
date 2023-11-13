@@ -2,6 +2,8 @@
 
 #include "sk_math.h"
 
+#define SECTIONS 6
+
 namespace gait {
 
   class Gait
@@ -16,23 +18,23 @@ namespace gait {
     bool forward = true;
 
     void update_x_and_y() {
-      if (current_pt <= interp_pts * 3/4) {
+      if (current_pt <= interp_pts * (SECTIONS-1)/SECTIONS) {
         // Go through min_x -> max_x @ max_y
-        t = current_pt / (interp_pts * 3/4);
+        t = current_pt / (interp_pts * (SECTIONS-1)/SECTIONS);
         x = sk_math::LERP(x_lims[0], x_lims[1], t);
         y = y_lims[1];
       }
-      else if (current_pt <= interp_pts * 7/8) {
+      else if (current_pt <= interp_pts * (SECTIONS*2-1)/(SECTIONS*2)) {
         // Go through max_x -> 1/2(max_x + min_x) & max_y -> min_y
-        t = 1.0f - (interp_pts * 7/8 - current_pt) / (interp_pts * 1/8);
+        t = 1.0f - (interp_pts * (SECTIONS*2-1)/(SECTIONS*2) - current_pt) / (interp_pts * 1/(SECTIONS*2));
         x = sk_math::LERP(x_lims[1], 1/2 * (x_lims[0] + x_lims[1]), t);
-        y = sk_math::LERP(y_lims[1], y_lims[0], t);
+        y = sk_math::SMOOTHLERP(y_lims[1], y_lims[0], t);
       }
       else if (current_pt <= interp_pts) {
         // Go through 1/2(max_x + min_x) -> min_x & min_y -> max_y
-        t = 1.0f - (interp_pts - current_pt) / (interp_pts * 1/8);
+        t = 1.0f - (interp_pts - current_pt) / (interp_pts * 1/(SECTIONS*2));
         x = sk_math::LERP(1/2 * (x_lims[0] + x_lims[1]), x_lims[0],  t);
-        y = sk_math::LERP(y_lims[0], y_lims[1], t);
+        y = sk_math::SMOOTHLERP(y_lims[0], y_lims[1], t);
       }
     }
 
@@ -45,8 +47,8 @@ namespace gait {
 
     Gait(int indx, int interp_pts, float min_x, float max_x, float min_y, float max_y)
     {
-      if (0 <= indx < 4){
-        current_pt = interp_pts/4 * indx;
+      if (0 <= indx < SECTIONS){
+        current_pt = interp_pts/SECTIONS * indx;
       }
 
       this->interp_pts = interp_pts;
