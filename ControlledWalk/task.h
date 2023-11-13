@@ -22,8 +22,8 @@ namespace task
 
     // Globals can be defined here
     gait::Gait leg_bl(0, GAIT);
-    gait::Gait leg_fr(1, GAIT);
-    gait::Gait leg_br(2, GAIT);
+    gait::Gait leg_fr(0, GAIT);
+    gait::Gait leg_br(3, GAIT);
     gait::Gait leg_fl(3, GAIT);
 
     // Can be used for code that only runs once
@@ -40,10 +40,10 @@ namespace task
     void ActuatorTest()
     {
       PRINTLN("Calibrating...");
-      float positions[8] = {0.0f, 15.0f,
-                            0.0f, 15.0f,
-                            0.0f, 15.0f,
-                            0.0f, 15.0f};
+      float positions[8] = {0.0f, 14.0f,
+                            0.0f, 14.0f,
+                            0.0f, 14.0f,
+                            0.0f, 14.0f};
       actuators::write(positions);
       delay(2500);
     }
