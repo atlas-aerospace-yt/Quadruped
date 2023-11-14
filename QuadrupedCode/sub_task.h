@@ -12,8 +12,8 @@
 #define BODY_LENGTH 30.0f
 #define BODY_WIDTH 15.0f
 
-#define MIN_CONTROL -1.0f
-#define MAX_CONTROL 1.0f
+#define MIN_CONTROL -2.0f
+#define MAX_CONTROL 2.0f
 
 namespace subtask {
   /*
