@@ -12,8 +12,11 @@
 #define BODY_LENGTH 30.0f
 #define BODY_WIDTH 15.0f
 
-#define MIN_CONTROL -2.0f
-#define MAX_CONTROL 2.0f
+#define MIN_CONTROL_X -1.0f
+#define MAX_CONTROL_X 1.0f
+
+#define MIN_CONTROL_Y -2.0f
+#define MAX_CONTROL_Y 2.0f
 
 namespace subtask {
   /*
@@ -67,6 +70,11 @@ namespace subtask {
   PID<float> y_axis(1.2f, 0.5f, 0.001f);
   PID<float> x_axis(1.2f, 0.5f, 0.001f);
 
+  float init(){
+      y_axis.setlims(2*MIN_CONTROL_Y/BODY_LENGTH, 2*MAX_CONTROL_Y/BODY_LENGTH);
+      x_axis.setlims(2*MIN_CONTROL_X/BODY_WIDTH, 2*MAX_CONTROL_X/BODY_WIDTH);
+  }
+
   float get_dt(){
     sk_timer.stop();
     float dt = sk_timer.deltaT();
@@ -87,8 +95,6 @@ namespace subtask {
     static float output[2];
     output[0] = BODY_LENGTH / 2 * sin(y_axis.update(ori.y, dt));
     output[1] = BODY_WIDTH / 2 * sin(x_axis.update(ori.z, dt));
-    output[0] = output[0] < MIN_CONTROL ? MIN_CONTROL : output[0] > MAX_CONTROL ? MAX_CONTROL : output[0];
-    output[1] = output[1] < MIN_CONTROL ? MIN_CONTROL : output[1] > MAX_CONTROL ? MAX_CONTROL : output[1];
     return output;
   }
 }  // namespace subtask

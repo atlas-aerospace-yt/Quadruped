@@ -63,8 +63,7 @@ namespace actuators{
 
     if (control) {
       float* output = subtask::control_loop(ori, dt);
-      GRAPH("u_x", output[0], BOT);
-      GRAPH("u_z", output[1], BOT);
+
       if (positions[1] < NORM_HEIGHT - output[1] + output[0] || positions[1] == NORM_HEIGHT){
         positions[1] = positions[1] - output[1] + output[0];
       }
@@ -79,6 +78,11 @@ namespace actuators{
       }
     }
 
+    for (int i=0; i<4; i++){
+      if (positions[2*i+1] > 15) {
+        positions[2*i+1] = 15;
+      }
+    }
     // Write the values to the servos
     float* pos = subtask::get_positions(positions[0], positions[1]);
     knee_br.write(servo_forward(pos[0]));
@@ -95,6 +99,10 @@ namespace actuators{
     pos = subtask::get_positions(positions[6], positions[7]);
     knee_fl.write(servo_forward(pos[0]));
     hip_fl.write(servo_backward(pos[1]));
+    GRAPH("leg_br", positions[1], TOP);
+    GRAPH("leg_bl", positions[3], TOP);
+    GRAPH("leg_fbr", positions[5], TOP);
+    GRAPH("leg_fl", positions[7], TOP);
   }
 
 }  // namespace actuators
