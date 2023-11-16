@@ -12,7 +12,7 @@
 // Tasks go here-- this keeps the main file clean and focused on the "flow" of tasks
 // Our general functions will be defined here things like our main loops
 // Long sections of code or repeated code loops can be moved to sub_task.h
-#define WALK_INTERP 200
+#define WALK_INTERP 250
 #define WALK_GAIT WALK_INTERP, -3.0f, 3.0f, 6.0f, NORM_HEIGHT, 6
 
 #define TROT_INTERP 200
@@ -151,7 +151,7 @@ namespace task
     int i = 0;
     int prev_i = 0;
 
-    while (counter < reps*STEPS){
+    while (counter < reps*STEPS*2){
 
       if (i < STEPS && prev_i <= i || i < 0){
         prev_i = i;
