@@ -98,7 +98,7 @@ namespace task
       leg_bl.update_forward();
       leg_br.update_forward();
 
-      actuators::write(positions, ori, dt, true);
+      actuators::write(positions, ori);//, dt, true);
 
       i ++;
 
@@ -137,7 +137,7 @@ namespace task
       leg_bl.update_forward();
       leg_br.update_forward();
 
-      actuators::write(positions, ori, dt, true);
+      actuators::write(positions, ori);//, dt, true);
 
       i ++;
       PRINTLN("Trotting loop: " + String(i));
@@ -216,7 +216,7 @@ namespace task
     ori = subtask::ori_quat.toEuler();
 
     float default_pos[8] = DEFAULT_POSITION;
-    actuators::write(default_pos, ori, dt, true);
+    actuators::write(default_pos, ori);//, dt, true);
     END_LOG;
   }
 } // namespace task

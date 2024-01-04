@@ -15,7 +15,7 @@
 #include "vector.h"
 
 // Constant definitions
-#define FWD_RATIO 36.0f / 19.0f
+#define FWD_RATIO 5.0f / 3.0f
 #define BWD_RATIO -5.0f / 3.0f
 
 #define MIN 0

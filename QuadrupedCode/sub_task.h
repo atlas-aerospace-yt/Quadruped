@@ -44,7 +44,7 @@ namespace subtask {
 
   float get_gamma(float value)
   {
-    return -7.0f/10.0f * value + 180;
+    return -2.0f/3.0f * value + 180;
   }
 
   float* get_positions(float x, float y)
