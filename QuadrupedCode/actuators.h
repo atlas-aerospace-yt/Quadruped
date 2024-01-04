@@ -21,6 +21,8 @@
 #define MIN 0
 #define MAX 180
 
+#define MIN_HEIGHT 8.0f
+#define MAX_HEIGHT 15.0f
 #define NORM_HEIGHT 13.0f
 
 namespace actuators{
@@ -59,30 +61,35 @@ namespace actuators{
     return output < MIN ? MIN : output > MAX ? MAX : output;
   }
 
-  void write(float* positions, Vec ori={0,0,0}, float dt=0, bool control=false){
+  float write_control(float height, float delta_x, float delta_y){
+    if (MIN_HEIGHT <= height+delta_x+delta_y <= MAX_HEIGHT){
+      return height+delta_x+delta_y;
+    }
+    if (height+delta_x+delta_y < MIN_HEIGHT) {
+      return MIN_HEIGHT;
+    }
+    return MAX_HEIGHT;
+  }
 
+  void write(float* positions, Vec ori={0,0,0}, float dt=0, bool control=false){
+    // If control is wanted, write the control values onto the position values
     if (control) {
       float* output = subtask::control_loop(ori, dt);
-
-      if (positions[1] < NORM_HEIGHT - output[1] + output[0] || positions[1] == NORM_HEIGHT){
-        positions[1] = positions[1] - output[1] + output[0];
-      }
-      if (positions[3] < NORM_HEIGHT + output[1] + output[0] || positions[3] == NORM_HEIGHT){
-        positions[3] = positions[3] + output[1] + output[0];
-      }
-      if (positions[5] < NORM_HEIGHT - output[1] - output[0] || positions[5] == NORM_HEIGHT){
-        positions[5] = positions[5] - output[1] - output[0];
-      }
-      if (positions[7] < NORM_HEIGHT + output[1] - output[0] || positions[7] == NORM_HEIGHT){
-        positions[7] = positions[7] + output[1] - output[0];
-      }
+      positions[1] = write_control(positions[1], -output[1], output[0]);
+      positions[3] = write_control(positions[3], output[1], output[0]);
+      positions[5] = write_control(positions[5], -output[1], -output[0]);
+      positions[7] = write_control(positions[7], output[1], -output[0]);
     }
 
+    // Check that all of the height positions are valid
     for (int i=0; i<4; i++){
-      if (positions[2*i+1] > 15) {
-        positions[2*i+1] = 15;
+      if (positions[2*i+1] > MAX_HEIGHT) {
+        positions[2*i+1] = MAX_HEIGHT;
+      } else if (positions[2*i+1] < MIN_HEIGHT) {
+        positions[2*i+1] = MIN_HEIGHT;
       }
     }
+
     // Write the values to the servos
     float* pos = subtask::get_positions(positions[0], positions[1]);
     knee_br.write(servo_forward(pos[0]));
