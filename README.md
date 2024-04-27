@@ -1,7 +1,9 @@
 # Quadruped
 My open-source EPQ project artefact. It is a fully 3D printable quadrupedal robot.
 
-![alt text]([http://url/to/img.png](https://github.com/atlas-aerospace-yt/Quadruped/blob/main/Renders/Quadruped.PNG))
+<p align="center">
+<img src=https://github.com/atlas-aerospace-yt/Quadruped/blob/main/Renders/Quadruped.PNG width=980 height=540>
+</p>
 
 ## Copied content
 The libraries folder contains libraries from the following repositories:
