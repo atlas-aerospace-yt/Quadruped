@@ -2,7 +2,7 @@
 My open-source EPQ project artefact. It is a fully 3D printable quadrupedal robot.
 
 <p align="center">
-<img src=https://github.com/atlas-aerospace-yt/Quadruped/blob/main/Renders/Quadruped.PNG width=980 height=540>
+<img src=https://github.com/atlas-aerospace-yt/Quadruped/blob/main/Renders/Quadruped.PNG width=540 height=540>
 </p>
 
 ## Copied content
